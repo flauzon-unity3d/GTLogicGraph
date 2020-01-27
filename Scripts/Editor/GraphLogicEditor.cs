@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using GeoTetra.GTLogicGraph;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Experimental.PlayerLoop;
+using UnityEngine.PlayerLoop;
+using UnityEngine.UIElements;
 
 [CustomEditor(typeof(LogicGraphInstance))]
 public class GraphLogicEditor : Editor
@@ -12,6 +13,34 @@ public class GraphLogicEditor : Editor
     private SerializedProperty _logicGraphObjectProperty;
     private SerializedProperty _inputsProperty;
     private SerializedProperty _outputsProperty;
+
+
+	public static string UXMLResourceToPackage(string resourcePath)
+    {
+        return "Assets/Editor Default Resources/" + resourcePath + ".uxml"; //***
+    }
+
+    public static StyleSheet LoadStyleSheet(string text)
+    {
+        return AssetDatabase.LoadAssetAtPath<StyleSheet>(text);
+    }
+
+    public static VisualTreeAsset LoadUXML(string text)
+    {
+        return AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(text);
+    }
+
+    public static Texture2D LoadImage(string text)
+    {
+        return AssetDatabase.LoadAssetAtPath<Texture2D>(text);
+    }
+	
+	public static void AddStyleSheetPath(VisualElement visualElement, string path)
+	{
+		var sheet = LoadStyleSheet(path);
+		if (sheet != null)
+			visualElement.styleSheets.Add(sheet);
+	}
 
     public override void OnInspectorGUI()
     {

@@ -2,9 +2,9 @@
 using System.IO;
 using System.Text;
 using UnityEditor;
-using UnityEditor.Experimental.UIElements;
+using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.Experimental.UIElements;
+using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
 namespace GeoTetra.GTLogicGraph
@@ -32,7 +32,7 @@ namespace GeoTetra.GTLogicGraph
                 {
                     _graphEditorView.saveRequested += UpdateAsset;
                     _graphEditorView.showInProjectRequested += PingAsset;
-                    this.GetRootVisualContainer().Add(_graphEditorView);
+                    this.rootVisualElement.Add(_graphEditorView);
                 }
             }
         }
@@ -56,7 +56,7 @@ namespace GeoTetra.GTLogicGraph
                 _logicGraphEditorObject.Initialize(logicGraphData);
                 LogicGraphEditorView = new LogicGraphEditorView(this, _logicGraphEditorObject)
                 {
-                    persistenceKey = _logicGraphEditorObject.GetInstanceID().ToString()
+                    viewDataKey = _logicGraphEditorObject.GetInstanceID().ToString()
                 };
                 LogicGraphEditorView.RegisterCallback<GeometryChangedEvent>(OnPostLayout);
 

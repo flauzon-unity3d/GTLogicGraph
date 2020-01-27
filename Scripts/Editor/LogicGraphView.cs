@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.UIElements.GraphView;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.Experimental.UIElements;
+using UnityEngine.UIElements;
 
 namespace GeoTetra.GTLogicGraph
 {
@@ -12,7 +12,7 @@ namespace GeoTetra.GTLogicGraph
 		
 		public LogicGraphView()
 		{
-			AddStyleSheetPath("Styles/LogicGraphView");
+            GraphLogicEditor.AddStyleSheetPath(this, "Styles/LogicGraphView");
 			Debug.Log("LogicGraphView Constructor");
 		}
 		

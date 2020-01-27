@@ -1,6 +1,8 @@
-﻿using UnityEditor.Experimental.UIElements.GraphView;
+﻿using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using Edge = UnityEditor.Experimental.UIElements.GraphView.Edge;
+using UnityEngine.UIElements;
+using UnityEditor.UIElements;
+using Edge = UnityEditor.Experimental.GraphView.Edge;
 
 namespace GeoTetra.GTLogicGraph
 {

@@ -1,6 +1,6 @@
 ﻿using System;
-using UnityEditor.Experimental.UIElements.GraphView;
-using UnityEngine.Experimental.UIElements;
+using UnityEditor.Experimental.GraphView;
+using UnityEngine.UIElements;
 
 namespace GeoTetra.GTLogicGraph
 {
@@ -9,7 +9,7 @@ namespace GeoTetra.GTLogicGraph
         PortView(Orientation portOrientation, Direction portDirection, Capacity portCapacity, Type type)
             : base(portOrientation, portDirection, portCapacity, type)
         {
-            AddStyleSheetPath("Styles/LogicPort");
+            GraphLogicEditor.AddStyleSheetPath(this, "Styles/LogicPort");
         }
 
         PortDescription _portDescription;
