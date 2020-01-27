@@ -30,6 +30,9 @@ namespace GeoTetra.GTLogicGraph
         {
             Debug.Log(logicGraphEditorObject.GetInstanceID());
             _editorWindow = editorWindow;
+            
+            
+
             _logicGraphEditorObject = logicGraphEditorObject;
             _logicGraphEditorObject.Deserialized += LogicGraphEditorDataOnDeserialized;
 
@@ -56,7 +59,7 @@ namespace GeoTetra.GTLogicGraph
             });
             Add(toolbar);
 
-            var content = new VisualElement {name = "content"};
+           // var content = new VisualElement {name = "content"};
             {
                 _graphView = new LogicGraphView(_logicGraphEditorObject)
                 {
@@ -64,15 +67,33 @@ namespace GeoTetra.GTLogicGraph
                     viewDataKey = "LogicGraphView"
                 };
 
-                _graphView.SetupZoom(0.05f, ContentZoomer.DefaultMaxScale);
+
+                //_graphView.SetupZoom(0.05f, ContentZoomer.DefaultMaxScale);
+                _graphView.SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
                 _graphView.AddManipulator(new ContentDragger());
                 _graphView.AddManipulator(new SelectionDragger());
                 _graphView.AddManipulator(new RectangleSelector());
                 _graphView.AddManipulator(new ClickSelector());
+                _graphView.AddManipulator(new EdgeManipulator());
+                _graphView.AddManipulator(new FreehandSelector());
                 _graphView.RegisterCallback<KeyDownEvent>(KeyDown);
-                content.Add(_graphView);
 
+                //*** Test... _graphView.Insert(0, new GridBackground());
+                _graphView.focusable = true;
+                
                 _graphView.graphViewChanged = GraphViewChanged;
+
+                // Add the minimap.
+                var miniMap = new MiniMap();
+                miniMap.SetPosition(new Rect(0, 372, 200, 176));
+                _graphView.Add(miniMap);
+
+                var blackBoard = new Blackboard();
+                blackBoard.SetPosition(new Rect(0, 0, 64, 64));
+                _graphView.Add(blackBoard);
+
+                _graphView.StretchToParentSize();
+                //content.Add(_graphView);
             }
 
             _searchWindowProvider = ScriptableObject.CreateInstance<SearchWindowProvider>();
@@ -87,8 +108,11 @@ namespace GeoTetra.GTLogicGraph
             };
 
             LoadElements();
-
-            Add(content);
+            
+           // Add(content);
+            
+            
+            _editorWindow.rootVisualElement.Add(_graphView);
         }
 
         private void LoadElements()
