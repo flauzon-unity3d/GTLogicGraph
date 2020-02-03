@@ -1,9 +1,6 @@
-LogicGraphEditorView {
-    flex: 1;
-}
+
 
 GraphEditorView #TitleBar {
-
 }
 
 LogicGraphEditorView > #content {
@@ -17,8 +14,6 @@ GraphEditorView > #content > #GraphView {
 GraphEditorView > #content > #inspector {
     width: 400;
 }
-
-
 
 .edge.fromMatrix4, .edge.fromMatrix3, .edge.fromMatrix2 {
     edge-output-color: #8FC1DF;

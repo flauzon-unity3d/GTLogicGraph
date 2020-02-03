@@ -18,6 +18,7 @@ namespace GeoTetra.GTLogicGraph
 //			}
 
 			DrawDefaultInspector();
+			base.ApplyRevertGUI();
 		}
 
 		private static bool ShowGraphEditWindow(string path)

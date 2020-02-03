@@ -1,5 +1,5 @@
 LogicGraphView {
     flex-direction: row;
-    background-color: #202020;
+    background-color: #252525;
     flex: 1;
 }

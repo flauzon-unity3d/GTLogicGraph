@@ -28,7 +28,7 @@ namespace GeoTetra.GTLogicGraph
 
             var contents = this.Q("contents");
 
-            var controlsContainer = new VisualElement {name = "controls"};
+              var controlsContainer = new VisualElement {name = "controls"};
             {
                 _controlsDivider = new VisualElement {name = "divider"};
                 _controlsDivider.AddToClassList("horizontal");

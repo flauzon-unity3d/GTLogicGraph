@@ -28,10 +28,7 @@ namespace GeoTetra.GTLogicGraph
 
         public LogicGraphEditorView(EditorWindow editorWindow, LogicGraphEditorObject logicGraphEditorObject)
         {
-            Debug.Log(logicGraphEditorObject.GetInstanceID());
             _editorWindow = editorWindow;
-            
-            
 
             _logicGraphEditorObject = logicGraphEditorObject;
             _logicGraphEditorObject.Deserialized += LogicGraphEditorDataOnDeserialized;
@@ -66,9 +63,7 @@ namespace GeoTetra.GTLogicGraph
                     name = "GraphView",
                     viewDataKey = "LogicGraphView"
                 };
-
-
-                //_graphView.SetupZoom(0.05f, ContentZoomer.DefaultMaxScale);
+                
                 _graphView.SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
                 _graphView.AddManipulator(new ContentDragger());
                 _graphView.AddManipulator(new SelectionDragger());
@@ -146,13 +141,11 @@ namespace GeoTetra.GTLogicGraph
                 
                 foreach (var nodeView in _graphView.nodes.ToList())
                 {
-                    Debug.Log("removing node " + nodeView);
                     _graphView.RemoveElement(nodeView);
                 }
 
                 foreach (var edge in _graphView.edges.ToList())
                 {
-                    Debug.Log("removing edge " + edge);
                     _graphView.RemoveElement(edge);
                 }
                 
@@ -162,16 +155,12 @@ namespace GeoTetra.GTLogicGraph
         
         private void LogicGraphEditorDataOnDeserialized()
         {
-            Debug.Log("GraphOnDeserialized");
-            //comes after GraphData was undone, so reload graph
+            // Comes after GraphData was undone, so reload graph
             _reloadGraph = true;
         }
 
         private GraphViewChange GraphViewChanged(GraphViewChange graphViewChange)
         {
-            if (graphViewChange.edgesToCreate != null)
-                Debug.Log("EDGES TO CREATE " + graphViewChange.edgesToCreate.Count);
-
             if (graphViewChange.movedElements != null)
             {
                 _logicGraphEditorObject.RegisterCompleteObjectUndo("Graph Element Moved.");
@@ -336,10 +325,6 @@ namespace GeoTetra.GTLogicGraph
         {
             leftPortDescription = (edge.output as PortView).PortDescription;
             rightPortDescription = (edge.input as PortView).PortDescription;
-            if (leftPortDescription == null || rightPortDescription == null)
-            {
-                Debug.Log("an edge is null");
-            }
         }
     }
 }

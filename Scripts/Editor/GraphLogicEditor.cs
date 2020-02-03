@@ -22,17 +22,20 @@ public class GraphLogicEditor : Editor
 
     public static StyleSheet LoadStyleSheet(string text)
     {
-        return AssetDatabase.LoadAssetAtPath<StyleSheet>(text);
+        return Resources.Load<StyleSheet>(text);
+        //return AssetDatabase.LoadAssetAtPath<StyleSheet>(text);
     }
 
     public static VisualTreeAsset LoadUXML(string text)
     {
-        return AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(text);
+        return Resources.Load<VisualTreeAsset>(text);
+        //return AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(text);
     }
 
     public static Texture2D LoadImage(string text)
     {
-        return AssetDatabase.LoadAssetAtPath<Texture2D>(text);
+        return Resources.Load<Texture2D>(text);
+        //return AssetDatabase.LoadAssetAtPath<Texture2D>(text);
     }
 	
 	public static void AddStyleSheetPath(VisualElement visualElement, string path)
@@ -40,7 +43,9 @@ public class GraphLogicEditor : Editor
 		var sheet = LoadStyleSheet(path);
 		if (sheet != null)
 			visualElement.styleSheets.Add(sheet);
-	}
+        else
+            Debug.LogError("Cannot add style sheet " + path);
+    }
 
     public override void OnInspectorGUI()
     {
