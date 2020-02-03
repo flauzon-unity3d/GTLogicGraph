@@ -1,19 +1,20 @@
-LogicGraphView {
+LogicDetailGraphView {
     flex-direction: row;
     background-color: #252525;
     flex: 1;
 	
     position: absolute;
     left: 0;
-    top: 0;
+    top: 400px;
     right: 0;
-    bottom: 400px;	
+    bottom: 0;
+	
 }
 
 .stretch {
     position: absolute;
     left: 0;
-    top: 0;
+    top: 400px;
     right: 0;
-    bottom: 400px;
+    bottom: 0;
 }

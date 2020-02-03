@@ -21,6 +21,7 @@ namespace GeoTetra.GTLogicGraph
         [SerializeField] private string _nodeGuid;
 
         public LogicGraphView Owner { get; set; }
+        public LogicDetailGraphView DetailView { get; set; }
         public SerializedNode SerializedNode { get; set; }
 
         public Vector3 Position
@@ -40,6 +41,22 @@ namespace GeoTetra.GTLogicGraph
             get { return _nodeGuid; }
         }
 
+        public string DisplayName
+        {
+            set
+            {
+                _displayName = value;
+            }
+            get 
+            {
+                if (String.IsNullOrEmpty(_displayName))
+                {
+                    return NodeType();
+                }
+                return _displayName;
+            }
+        }
+
         public NodeEditor()
         {
             _nodeGuid = System.Guid.NewGuid().ToString();
@@ -47,7 +64,7 @@ namespace GeoTetra.GTLogicGraph
         }
 
         public abstract void ConstructNode();
-
+                       
         public string NodeType()
         {
             var attrs = GetType().GetCustomAttributes(typeof(NodeEditorType), false) as NodeEditorType[];

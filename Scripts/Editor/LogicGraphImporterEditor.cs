@@ -2,6 +2,7 @@
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.Experimental.AssetImporters;
+using UnityEditor.ProjectWindowCallback;
 using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
@@ -21,11 +22,48 @@ namespace GeoTetra.GTLogicGraph
 			base.ApplyRevertGUI();
 		}
 
+        
+        public static LogicGraphObject CreateNewAsset(string path)
+        {
+            return CreateNew<LogicGraphObject>(path);  
+        }
+
+        public static T CreateNew<T>(string path) where T : LogicGraphObject
+        {
+            var templateData = Resources.Load("Templates/Template.SensorGraph");
+            File.WriteAllText(path, EditorJsonUtility.ToJson(templateData, true));
+
+            AssetDatabase.ImportAsset(path);
+
+            return AssetDatabase.LoadAssetAtPath<T>(path);
+        }
+        
+        internal class DoCreateSensorGraph : EndNameEditAction
+        {
+            public override void Action(int instanceId, string pathName, string resourceFile)
+            {
+                var obj = CreateNewAsset(pathName);
+
+                AssetDatabase.ImportAsset(pathName);
+                var guid = AssetDatabase.AssetPathToGUID(pathName);
+                ShowGraphEditWindow(pathName);
+
+                ProjectWindowUtil.ShowCreatedAsset(obj);
+            }
+        }
+
+        [MenuItem("Assets/Create/Sensor/Sensor Graph", false, 306)]
+        public static void CreateVisualEffectAsset()
+        {
+            var action = ScriptableObject.CreateInstance<DoCreateSensorGraph>();            
+            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0, action, "New_Sensor.SensorGraph", null, null);
+        }
+
 		private static bool ShowGraphEditWindow(string path)
 		{
 			var guid = AssetDatabase.AssetPathToGUID(path);
 			var extension = Path.GetExtension(path);
-			if (extension != ".LogicGraph" && extension != ".LogicGraph")
+			if (extension != ".SensorGraph" && extension != ".SensorGraph")
 				return false;
 
 			var foundWindow = false;

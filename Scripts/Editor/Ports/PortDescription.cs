@@ -52,9 +52,10 @@ namespace GeoTetra.GTLogicGraph
             return otherPortDescription != null
                    && otherPortDescription.Owner != Owner
                    && otherPortDescription.isInputSlot != isInputSlot
-                   && ((isInputSlot
+                   && (((isInputSlot
                        ? otherPortDescription.IsCompatibleWithInputSlotType(ValueType)
-                       : IsCompatibleWithInputSlotType(otherPortDescription.ValueType)));
+                       : IsCompatibleWithInputSlotType(otherPortDescription.ValueType)))
+                   || otherPortDescription.ValueType == PortValueType.Trigger); // Trigger is always compatible
         }
     }
 
@@ -71,6 +72,14 @@ namespace GeoTetra.GTLogicGraph
         Vector3,
         Vector2,
         Vector1,
-        Boolean
+        Boolean,
+        GameObject,
+        Transform,
+        Photon,
+        PixelArray,
+        DataArray,
+        Texture,
+        ComputeBuffer,
+        Trigger
     }
 }

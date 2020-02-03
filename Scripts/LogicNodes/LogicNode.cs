@@ -21,6 +21,7 @@ namespace GeoTetra.GTLogicGraph
         
         public string DisplayName
         {
+            set { _displayName = value; }
             get { return _displayName; }
         }
     }

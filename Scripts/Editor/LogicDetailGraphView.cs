@@ -6,16 +6,16 @@ using UnityEngine.UIElements;
 
 namespace GeoTetra.GTLogicGraph
 {
-	public class LogicGraphView : GraphView
+	public class LogicDetailGraphView : GraphView
 	{		
 		public LogicGraphEditorObject LogicGraphEditorObject { get; private set; }
 		
-		public LogicGraphView()
+		public LogicDetailGraphView()
 		{
-            GraphLogicEditor.AddStyleSheetPath(this, "Styles/LogicGraphView");
+            GraphLogicEditor.AddStyleSheetPath(this, "Styles/LogicDetailGraphView");
 		}
 		
-		public LogicGraphView(LogicGraphEditorObject logicGraphEditorObject) : this()
+		public LogicDetailGraphView(LogicGraphEditorObject logicGraphEditorObject) : this()
 		{
 			LogicGraphEditorObject = logicGraphEditorObject;
 		}

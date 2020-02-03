@@ -27,7 +27,6 @@ namespace GeoTetra.GTLogicGraph
             for (int i = 0; i < _logicGraphData.SerializedNodes.Count; ++i)
             {
                 LogicNode node = CreateLogicNodeFromSerializedNode(_logicGraphData.SerializedNodes[i]);
-                Debug.Log("Adding node " + node);
                 if (node != null)
                 {
                     nodes.Add(node);
@@ -35,11 +34,9 @@ namespace GeoTetra.GTLogicGraph
             }
 
             inputNodes.Clear();
-            Debug.Log(_logicGraphData.SerializedInputNodes.Count);
             for (int i = 0; i < _logicGraphData.SerializedInputNodes.Count; ++i)
             {
-                LogicNode node = CreateLogicNodeFromSerializedNode(_logicGraphData.SerializedInputNodes[i]);
-                Debug.Log("Adding node " + node);
+                LogicNode node = CreateLogicNodeFromSerializedNode(_logicGraphData.SerializedInputNodes[i]);                
                 if (node != null)
                 {
                     inputNodes.Add(node);
@@ -50,7 +47,6 @@ namespace GeoTetra.GTLogicGraph
             for (int i = 0; i < _logicGraphData.SerializedOutputNodes.Count; ++i)
             {
                 LogicNode node = CreateLogicNodeFromSerializedNode(_logicGraphData.SerializedOutputNodes[i]);
-                Debug.Log("Adding node " + node);
                 if (node != null)
                 {
                     outputNodes.Add(node);

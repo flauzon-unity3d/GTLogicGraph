@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -12,6 +13,7 @@ namespace GeoTetra.GTLogicGraph
     {
         private LogicGraphEditorObject _logicGraphEditorObject;
         private LogicGraphView _graphView;
+        private LogicDetailGraphView _detailGraphView;
         private EditorWindow _editorWindow;
         private EdgeConnectorListener _edgeConnectorListener;
         private SearchWindowProvider _searchWindowProvider;
@@ -36,8 +38,12 @@ namespace GeoTetra.GTLogicGraph
             GraphLogicEditor.AddStyleSheetPath(this, "Styles/LogicGraphEditorView");
 
             var toolbar = new IMGUIContainer(() =>
-            {
+            {                
                 GUILayout.BeginHorizontal(EditorStyles.toolbar);
+                
+                GUILayout.Label(Path.GetFileName(_editorWindow.name));
+                GUILayout.Space(32.0f);
+                
                 if (GUILayout.Button("Save Asset", EditorStyles.toolbarButton))
                 {
                     if (saveRequested != null)
@@ -56,7 +62,10 @@ namespace GeoTetra.GTLogicGraph
             });
             Add(toolbar);
 
-           // var content = new VisualElement {name = "content"};
+            var clientView = new VisualElement {name = "clientView"};
+            clientView.style.flexGrow = 1;
+
+            var mainGraph = new VisualElement {name = "mainGraph"};
             {
                 _graphView = new LogicGraphView(_logicGraphEditorObject)
                 {
@@ -88,8 +97,41 @@ namespace GeoTetra.GTLogicGraph
                 _graphView.Add(blackBoard);
 
                 _graphView.StretchToParentSize();
-                //content.Add(_graphView);
+                mainGraph.Add(_graphView);
             }
+
+            var detailGraph = new VisualElement {name = "detailGraph"};
+            {
+                _detailGraphView = new LogicDetailGraphView(_logicGraphEditorObject)
+                {
+                    name = "DetailGraphView",
+                    viewDataKey = "LogicDetailGraphView"
+                };
+                
+                _detailGraphView.SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
+                _detailGraphView.AddManipulator(new ContentDragger());
+                _detailGraphView.AddManipulator(new SelectionDragger());
+                _detailGraphView.AddManipulator(new RectangleSelector());
+                _detailGraphView.AddManipulator(new ClickSelector());
+                _detailGraphView.AddManipulator(new EdgeManipulator());
+                _detailGraphView.AddManipulator(new FreehandSelector());
+                _detailGraphView.RegisterCallback<KeyDownEvent>(KeyDown);
+
+                _detailGraphView.focusable = true;
+                
+                _detailGraphView.graphViewChanged = GraphViewChanged;
+
+                _detailGraphView.style.backgroundColor = new Color(0.05f, 0.05f, 0.05f);
+
+                var miniMap = new MiniMap();
+                miniMap.SetPosition(new Rect(0, 0, 200, 176));
+                _detailGraphView.Add(miniMap);
+
+
+                _detailGraphView.StretchToParentSize();
+                detailGraph.Add(_detailGraphView);
+            }
+
 
             _searchWindowProvider = ScriptableObject.CreateInstance<SearchWindowProvider>();
             _searchWindowProvider.Initialize(editorWindow, this, _graphView);
@@ -103,11 +145,22 @@ namespace GeoTetra.GTLogicGraph
             };
 
             LoadElements();
+
+            // Main Graph Style            
+            mainGraph.style.width = new Length(100, LengthUnit.Percent);
+            mainGraph.style.height = new Length(70, LengthUnit.Percent);
+            clientView.Add(mainGraph);
             
-           // Add(content);
+            // Detail Graph Style
+            detailGraph.style.width = new Length(100, LengthUnit.Percent);
+            detailGraph.style.height = new Length(30, LengthUnit.Percent);
+            detailGraph.style.borderTopWidth = 2;
+            detailGraph.style.borderTopColor = Color.black;
+            detailGraph.style.backgroundColor = Color.red;
+            clientView.Add(detailGraph);
             
-            
-            _editorWindow.rootVisualElement.Add(_graphView);
+            clientView.StretchToParentSize();
+            _editorWindow.rootVisualElement.Add(clientView);            
         }
 
         private void LoadElements()
@@ -228,6 +281,7 @@ namespace GeoTetra.GTLogicGraph
             }
 
             nodeEditor.Owner = _graphView;
+            nodeEditor.DetailView = _detailGraphView;
             var nodeView = new LogicNodeView {userData = nodeEditor};
             _graphView.AddElement(nodeView);
             nodeView.Initialize(nodeEditor, _edgeConnectorListener);
@@ -260,7 +314,8 @@ namespace GeoTetra.GTLogicGraph
                 JsonUtility.FromJsonOverwrite(serializedNode.JSON, nodeEditor);
                 nodeEditor.SerializedNode = serializedNode;
                 nodeEditor.Owner = _graphView;
-                var nodeView = new LogicNodeView {userData = nodeEditor};
+                nodeEditor.DetailView = _detailGraphView;
+                var nodeView = new LogicNodeView {userData = nodeEditor};                
                 _graphView.AddElement(nodeView);
                 nodeView.Initialize(nodeEditor, _edgeConnectorListener);
                 nodeView.MarkDirtyRepaint();

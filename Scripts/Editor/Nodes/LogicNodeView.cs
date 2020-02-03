@@ -3,6 +3,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
+using UnityEngine.EventSystems;
 
 namespace GeoTetra.GTLogicGraph
 {
@@ -24,11 +25,11 @@ namespace GeoTetra.GTLogicGraph
 
             _connectorListener = connectorListener;
             NodeEditor = nodeEditor;
-            title = NodeEditor.NodeType();
+            title = NodeEditor.DisplayName;
 
             var contents = this.Q("contents");
 
-              var controlsContainer = new VisualElement {name = "controls"};
+            var controlsContainer = new VisualElement {name = "controls"};
             {
                 _controlsDivider = new VisualElement {name = "divider"};
                 _controlsDivider.AddToClassList("horizontal");
@@ -70,13 +71,38 @@ namespace GeoTetra.GTLogicGraph
                     inputContainer.Add(port);
             }
         }
-        
+
+        public override void OnSelected()
+        {
+            NodeEditor.DetailView.Clear();
+
+            var gn = new LogicNodeView();
+            gn.Initialize(NodeEditor, null);
+            gn.SetEnabled(true);
+            gn.SetPosition(new Rect(0, 0, 100, 100));
+            NodeEditor.DetailView.Add(gn);
+
+            //*** Eventually, NodeEditor.BuildDetailView(NodeEditor.DetailView);
+
+            var miniMap = new MiniMap();
+            miniMap.SetPosition(new Rect(0, 0, 200, 176));
+            NodeEditor.DetailView.Add(miniMap);
+
+
+            Debug.Log("SELECTED " + NodeEditor.GetType().Name);
+        }
+
+        public override void OnUnselected()
+        {
+            NodeEditor.DetailView.Clear();
+            Debug.Log("UNSELECTED");
+        }
+
         public override bool expanded
         {
             get { return base.expanded; }
             set
             {
-                Debug.Log(value);
                 if (base.expanded != value)
                     base.expanded = value;
 

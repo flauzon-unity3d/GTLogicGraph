@@ -60,8 +60,9 @@ namespace GeoTetra.GTLogicGraph
                 };
                 LogicGraphEditorView.RegisterCallback<GeometryChangedEvent>(OnPostLayout);
 
-                titleContent = new GUIContent(_logicGraphEditorObject.name);
-
+                this.name = path;
+                titleContent = new GUIContent("Sensor Graph");
+                
                 Repaint();
             }
             catch (Exception)
@@ -89,12 +90,12 @@ namespace GeoTetra.GTLogicGraph
 
         public void PingAsset()
         {
-//            if (selectedGuid != null)
-//            {
-//                var path = AssetDatabase.GUIDToAssetPath(selectedGuid);
-//                var asset = AssetDatabase.LoadAssetAtPath<Object>(path);
-//                EditorGUIUtility.PingObject(asset);
-//            }
+            if (SelectedGuid != null)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(SelectedGuid);
+                var asset = AssetDatabase.LoadAssetAtPath<Object>(path);
+                EditorGUIUtility.PingObject(asset);
+            }
         }
 
         public void UpdateAsset()
@@ -116,8 +117,7 @@ namespace GeoTetra.GTLogicGraph
         }
 
         void OnPostLayout(GeometryChangedEvent evt)
-        {
-            Debug.Log("OnGeometryChanged");
+        {            
             LogicGraphEditorView.UnregisterCallback<GeometryChangedEvent>(OnPostLayout);
             LogicGraphEditorView.LogicGraphView.FrameAll();
         }

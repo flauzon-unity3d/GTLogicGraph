@@ -23,19 +23,16 @@ public class GraphLogicEditor : Editor
     public static StyleSheet LoadStyleSheet(string text)
     {
         return Resources.Load<StyleSheet>(text);
-        //return AssetDatabase.LoadAssetAtPath<StyleSheet>(text);
     }
 
     public static VisualTreeAsset LoadUXML(string text)
     {
         return Resources.Load<VisualTreeAsset>(text);
-        //return AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(text);
     }
 
     public static Texture2D LoadImage(string text)
     {
         return Resources.Load<Texture2D>(text);
-        //return AssetDatabase.LoadAssetAtPath<Texture2D>(text);
     }
 	
 	public static void AddStyleSheetPath(VisualElement visualElement, string path)

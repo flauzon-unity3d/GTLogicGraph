@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 [ScriptedImporter(13, LogicGraphImporter.LogicGraphExtension)]
 public class LogicGraphImporter : ScriptedImporter
 {
-    public const string LogicGraphExtension = "LogicGraph";
+    public const string LogicGraphExtension = "SensorGraph";
 
     public override void OnImportAsset(AssetImportContext ctx)
     {

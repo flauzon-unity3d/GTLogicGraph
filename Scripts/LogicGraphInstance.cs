@@ -32,12 +32,10 @@ namespace GeoTetra.GTLogicGraph
 
         private void Awake()
         {
-            Debug.Log("Start");
         }
 
         public void OnEnable()
         {
-            Debug.Log("OnEnable");
             _logicGraphObject.LoadLogicNodeGraph(_nodes, _inputNodes, _outputNodes);
             UpdateInputsAndOutputs();
         }
@@ -51,8 +49,6 @@ namespace GeoTetra.GTLogicGraph
 
         private void OnValidate()
         {
-            Debug.Log("OnValidate");
-
             if (_logicGraphObject != null)
             {
                 _logicGraphObject.LoadLogicNodeGraph(_nodes, _inputNodes, _outputNodes);
@@ -67,8 +63,6 @@ namespace GeoTetra.GTLogicGraph
 
         private void UpdateInputsAndOutputs()
         {
-            Debug.Log("GraphLogic OnEnable");
-
             if (_inputNodes.Count != 0)
             {
                 List<GraphInput> loadedInputs = new List<GraphInput>();
