@@ -10,16 +10,16 @@ namespace GeoTetra.GTLogicGraph
     /// <summary>
     /// Actual visual nodes which gets added to the graph UI.
     /// </summary>
-    public class LogicNodeView : Node
+    public class LogicDetailNodeView : Node
     {
         VisualElement _controlsDivider;
         VisualElement _controlItems;
         VisualElement _portInputContainer;
         IEdgeConnectorListener _connectorListener;
 
-        public NodeEditor NodeEditor { get; private set; }
+        public NodeDetailEditor NodeEditor { get; private set; }
 
-        public void Initialize(NodeEditor nodeEditor, IEdgeConnectorListener connectorListener)
+        public void Initialize(NodeDetailEditor nodeEditor, IEdgeConnectorListener connectorListener)
         {
             GraphLogicEditor.AddStyleSheetPath(this, "Styles/LogicNodeView");
 
@@ -42,8 +42,8 @@ namespace GeoTetra.GTLogicGraph
                                                             BindingFlags.Public |
                                                             BindingFlags.NonPublic))
                 {
-                    foreach (INodeControlAttribute attribute in
-                        propertyInfo.GetCustomAttributes(typeof(INodeControlAttribute), false))
+                    foreach (INodeDetailControlAttribute attribute in
+                        propertyInfo.GetCustomAttributes(typeof(INodeDetailControlAttribute), false))
                     {
                         _controlItems.Add(attribute.InstantiateControl(nodeEditor, propertyInfo));
                     }
@@ -51,7 +51,7 @@ namespace GeoTetra.GTLogicGraph
             }
             contents.Add(controlsContainer);
 
-            List<PortDescription> foundSlots = new List<PortDescription>();
+            List<PortDetailDescription> foundSlots = new List<PortDetailDescription>();
             nodeEditor.GetSlots(foundSlots);
             AddSlots(foundSlots);
 
@@ -60,11 +60,11 @@ namespace GeoTetra.GTLogicGraph
             RefreshExpandedState();
         }
 
-        private void AddSlots(IEnumerable<PortDescription> slots)
+        private void AddSlots(IEnumerable<PortDetailDescription> slots)
         {
             foreach (var slot in slots)
             {
-                var port = PortView.Create(slot, _connectorListener);
+                var port = PortDetailView.Create(slot, _connectorListener);
                 if (slot.isOutputSlot)
                     outputContainer.Add(port);
                 else
@@ -74,7 +74,7 @@ namespace GeoTetra.GTLogicGraph
 
         public override void OnSelected()
         {
-          /*  NodeEditor.DetailView.Clear();
+            /*NodeEditor.DetailView.Clear();
 
             var gn = new LogicNodeView();
             gn.Initialize(NodeEditor, null);
@@ -86,16 +86,16 @@ namespace GeoTetra.GTLogicGraph
 
             var miniMap = new MiniMap();
             miniMap.SetPosition(new Rect(0, 0, 200, 176));
-            NodeEditor.DetailView.Add(miniMap);*/
+            NodeEditor.DetailView.Add(miniMap);
 
 
-            Debug.Log("SELECTED " + NodeEditor.GetType().Name);
+            Debug.Log("SELECTED " + NodeEditor.GetType().Name);*/
         }
 
         public override void OnUnselected()
         {
-           // NodeEditor.DetailView.Clear();
-            Debug.Log("UNSELECTED");
+            /*NodeEditor.DetailView.Clear();
+            Debug.Log("UNSELECTED");*/
         }
 
         public override bool expanded

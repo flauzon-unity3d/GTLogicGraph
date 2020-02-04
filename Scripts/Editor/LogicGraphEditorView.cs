@@ -16,7 +16,9 @@ namespace GeoTetra.GTLogicGraph
         private LogicDetailGraphView _detailGraphView;
         private EditorWindow _editorWindow;
         private EdgeConnectorListener _edgeConnectorListener;
+        private EdgeDetailConnectorListener _edgeDetailConnectorListener;
         private SearchWindowProvider _searchWindowProvider;
+        private SearchDetailWindowProvider _searchDetailWindowProvider;
         private bool _reloadGraph;
 
         public Action saveRequested { get; set; }
@@ -132,7 +134,7 @@ namespace GeoTetra.GTLogicGraph
                 detailGraph.Add(_detailGraphView);
             }
 
-
+            // GraphView node creation search
             _searchWindowProvider = ScriptableObject.CreateInstance<SearchWindowProvider>();
             _searchWindowProvider.Initialize(editorWindow, this, _graphView);
 
@@ -142,6 +144,18 @@ namespace GeoTetra.GTLogicGraph
             {
                 _searchWindowProvider.ConnectedPortView = null;
                 SearchWindow.Open(new SearchWindowContext(c.screenMousePosition), _searchWindowProvider);
+            };
+
+            // DetailGraphView node creation search
+            _searchDetailWindowProvider = ScriptableObject.CreateInstance<SearchDetailWindowProvider>();
+            _searchDetailWindowProvider.Initialize(editorWindow, this, _detailGraphView);
+            
+            _edgeDetailConnectorListener = new EdgeDetailConnectorListener(this, _searchDetailWindowProvider);
+
+             _detailGraphView.nodeCreationRequest = (c) =>
+            {
+                _searchDetailWindowProvider.ConnectedPortView = null;
+                SearchWindow.Open(new SearchWindowContext(c.screenMousePosition), _searchDetailWindowProvider);
             };
 
             LoadElements();
@@ -220,8 +234,11 @@ namespace GeoTetra.GTLogicGraph
                 foreach (var element in graphViewChange.movedElements)
                 {
                     NodeEditor nodeEditor = element.userData as NodeEditor;
-                    nodeEditor.Position = element.GetPosition().position;
-                    nodeEditor.SerializedNode.JSON = JsonUtility.ToJson(nodeEditor);
+                    if (nodeEditor != null)
+                    {
+                        nodeEditor.Position = element.GetPosition().position;
+                        nodeEditor.SerializedNode.JSON = JsonUtility.ToJson(nodeEditor);
+                    }
                 }
             }
 
@@ -254,6 +271,38 @@ namespace GeoTetra.GTLogicGraph
             else if (evt.keyCode == KeyCode.F1)
             {
             }
+        }
+
+        public void AddDetailNode(NodeDetailEditor nodeEditor)
+        {
+            _logicGraphEditorObject.RegisterCompleteObjectUndo("Add Detail Node " + nodeEditor.NodeType());
+
+            SerializedNode serializedNode = new SerializedNode
+            {
+                NodeType = nodeEditor.NodeType(),
+                JSON = JsonUtility.ToJson(nodeEditor)
+            };
+
+            nodeEditor.SerializedNode = serializedNode;
+            if (nodeEditor is IInputNode)
+            {
+                _logicGraphEditorObject.LogicGraphData.SerializedInputNodes.Add(serializedNode);
+            }
+            else if (nodeEditor is IOutputNode)
+            {
+                _logicGraphEditorObject.LogicGraphData.SerializedOutputNodes.Add(serializedNode);
+            }
+            else
+            {
+                _logicGraphEditorObject.LogicGraphData.SerializedNodes.Add(serializedNode);
+            }
+
+            nodeEditor.Owner = _graphView;
+            nodeEditor.DetailView = _detailGraphView;
+            var nodeView = new LogicDetailNodeView {userData = nodeEditor};
+            _detailGraphView.AddElement(nodeView);
+            nodeView.Initialize(nodeEditor, _edgeDetailConnectorListener);
+            nodeView.MarkDirtyRepaint();
         }
 
         public void AddNode(NodeEditor nodeEditor)
@@ -380,6 +429,37 @@ namespace GeoTetra.GTLogicGraph
         {
             leftPortDescription = (edge.output as PortView).PortDescription;
             rightPortDescription = (edge.input as PortView).PortDescription;
+        }
+
+
+        
+        public void AddDetailEdge(Edge edgeView)
+        {
+            PortDetailDescription leftPortDescription;
+            PortDetailDescription rightPortDescription;
+            GetDetailSlots(edgeView, out leftPortDescription, out rightPortDescription);
+
+            _logicGraphEditorObject.RegisterCompleteObjectUndo("Connect Edge");
+            SerializedEdge serializedEdge = new SerializedEdge
+            {
+                SourceNodeGuid = leftPortDescription.Owner.NodeGuid,
+                SourceMemberName = leftPortDescription.MemberName,
+                TargetNodeGuid = rightPortDescription.Owner.NodeGuid,
+                TargetMemberName = rightPortDescription.MemberName
+            };
+
+            //***_logicGraphEditorObject.LogicGraphData.SerializedEdges.Add(serializedEdge);
+
+            edgeView.userData = serializedEdge;
+            edgeView.output.Connect(edgeView);
+            edgeView.input.Connect(edgeView);
+            _detailGraphView.AddElement(edgeView);
+        }
+
+        private void GetDetailSlots(Edge edge, out PortDetailDescription leftPortDescription, out PortDetailDescription rightPortDescription)
+        {
+            leftPortDescription = (edge.output as PortDetailView).PortDescription;
+            rightPortDescription = (edge.input as PortDetailView).PortDescription;
         }
     }
 }
