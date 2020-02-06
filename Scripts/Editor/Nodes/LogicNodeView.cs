@@ -72,30 +72,54 @@ namespace GeoTetra.GTLogicGraph
             }
         }
 
+        private void ClearDetailNodes()
+        {
+            List<VisualElement> lstRemove = new List<VisualElement>();
+            foreach (VisualElement ele in NodeEditor.DetailView.Children())
+            {
+                if (ele as Node != null || ele as Edge != null ||
+                    ele as MiniMap != null ||
+                    ele as Blackboard != null || ele as BlackboardField != null || ele as BlackboardRow != null || ele as BlackboardSection != null)
+                {
+                    lstRemove.Add(ele);
+                }
+            }
+            lstRemove.AddRange(NodeEditor.DetailView.graphElements.ToList());
+
+            foreach (VisualElement ele in lstRemove)
+            {
+                if (ele as GraphElement != null)
+                {
+                    NodeEditor.DetailView.RemoveElement(ele as GraphElement);
+                }
+                else
+                {
+                    NodeEditor.DetailView.Remove(ele);
+                }
+            }            
+        }
+
         public override void OnSelected()
         {
-          /*  NodeEditor.DetailView.Clear();
+            // Seek and destroy nodes and edges
+            ClearDetailNodes();
+            NodeEditor.Owner.ContextNode = NodeEditor;
 
-            var gn = new LogicNodeView();
-            gn.Initialize(NodeEditor, null);
-            gn.SetEnabled(true);
-            gn.SetPosition(new Rect(0, 0, 100, 100));
-            NodeEditor.DetailView.Add(gn);
+            var bb = new Blackboard(NodeEditor.DetailView);
+            bb.title = NodeEditor.DisplayName;
+            bb.subTitle = string.Empty;
+            bb.SetPosition(new Rect(4, 24, 300, 200));            
+            NodeEditor.DetailView.Add(bb);
 
-            //*** Eventually, NodeEditor.BuildDetailView(NodeEditor.DetailView);
-
-            var miniMap = new MiniMap();
-            miniMap.SetPosition(new Rect(0, 0, 200, 176));
-            NodeEditor.DetailView.Add(miniMap);*/
-
-
-            Debug.Log("SELECTED " + NodeEditor.GetType().Name);
+            // Deserialize context node
+            NodeEditor.BuildDetailView(NodeEditor.DetailView);
         }
 
         public override void OnUnselected()
         {
-           // NodeEditor.DetailView.Clear();
-            Debug.Log("UNSELECTED");
+            //*** Save modifs in detail view?
+            NodeEditor.Owner.ContextNode = null;
+            ClearDetailNodes();
         }
 
         public override bool expanded

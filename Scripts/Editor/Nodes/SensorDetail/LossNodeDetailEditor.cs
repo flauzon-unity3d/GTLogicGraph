@@ -1,13 +1,12 @@
 ﻿using GeoTetra.GTLogicGraph.Slots;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
 {
-    [Title("Signal", "Band Pass Filter")]
-    [NodeDetailEditorType(typeof(BandPassFilterLogicNodeDetail))]
-    public class BandPassFilterNodeDetailEditor : NodeDetailEditor
+    [Title("Signal", "Loss")]
+    [NodeDetailEditorType(typeof(LossLogicNodeDetail))]
+    public class LossNodeDetailEditor : NodeDetailEditor
     {
         [Serializable]
         public class Parameters
@@ -18,33 +17,17 @@ namespace GeoTetra.GTLogicGraph
 
         [SerializeField]
         private Parameters _params;
-        
-        [SerializeField]
-        private List<float> _curveValue;
-        
-        [NodeDetailCurveControl("Wavelength curve")]
-        public CurveDetailData CurveValue
-        {
-            get { return new CurveDetailData(_curveValue); }
-            set
-            {
-                if (_curveValue == value.data)
-                    return;
-                _curveValue = value.data;
-                SetDirty();
-            }
-        }
-
+       
         public override void ConstructNode()
         {
-            DisplayName = "Band Pass Filter";
+            DisplayName = "Loss";
 
             AddSlot(new TriggerDetailPortDescription(this, "Trigger", "In", PortDetailDirection.Input));
             AddSlot(new TriggerDetailPortDescription(this, "Trigger", "Out", PortDetailDirection.Output));
         }
     }
 
-    public class BandPassFilterLogicNodeDetail : LogicNode
+    public class LossLogicNodeDetail : LogicNode
     {
         [NodePort]
         public event Action<float> Vector1Output;

@@ -1,8 +1,8 @@
 BooleanSlotControlView {
     flex-direction: row;
-    align-items: center;
+    align-items: center;	
 }
 
 BooleanSlotControlView > Toggle {
-    width: 20;
+    width: 20;	
 }

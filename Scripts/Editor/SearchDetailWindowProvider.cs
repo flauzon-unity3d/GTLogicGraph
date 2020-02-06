@@ -13,7 +13,9 @@ namespace GeoTetra.GTLogicGraph
     public class SearchDetailWindowProvider : ScriptableObject, ISearchWindowProvider
     {
         private EditorWindow _editorWindow;
+        private NodeEditor _sourceNode;
         private LogicGraphEditorView _logicGraphEditorView;
+        private LogicGraphView _contextGraphView;
         private LogicDetailGraphView _graphView;
         private Texture2D m_Icon;
         public PortDetailView ConnectedPortView { get; set; }
@@ -21,9 +23,11 @@ namespace GeoTetra.GTLogicGraph
         public Vector2 targetPosition { get; private set; }
 
         public void Initialize(EditorWindow editorWindow, 
-            LogicGraphEditorView logicGraphEditorView, 
+            LogicGraphEditorView logicGraphEditorView,
+            LogicGraphView contextGraphView,
             LogicDetailGraphView graphView)
         {
+            _contextGraphView = contextGraphView; // Context within we are adding subgraph detail node
             _editorWindow = editorWindow;
             _logicGraphEditorView = logicGraphEditorView;
             _graphView = graphView;
@@ -218,8 +222,9 @@ namespace GeoTetra.GTLogicGraph
             var windowMousePosition = _editorWindow.rootVisualElement.ChangeCoordinatesTo(_editorWindow.rootVisualElement.parent, context.screenMousePosition - _editorWindow.position.position);
             var graphMousePosition = _graphView.contentViewContainer.WorldToLocal(windowMousePosition);
             nodeEditor.Position = new Vector3(graphMousePosition.x, graphMousePosition.y, 0);
-            
-            _logicGraphEditorView.AddDetailNode(nodeEditor);
+
+            // Find selected source node within _contextGraphView            
+            _logicGraphEditorView.AddDetailNode(nodeEditor, _contextGraphView.ContextNode);
 
 //            if (connectedPort != null)
 //            {

@@ -16,12 +16,12 @@ namespace GeoTetra.GTLogicGraph
         VisualElement _controlItems;
         VisualElement _portInputContainer;
         IEdgeConnectorListener _connectorListener;
-
+        
         public NodeDetailEditor NodeEditor { get; private set; }
 
         public void Initialize(NodeDetailEditor nodeEditor, IEdgeConnectorListener connectorListener)
         {
-            GraphLogicEditor.AddStyleSheetPath(this, "Styles/LogicNodeView");
+            GraphLogicEditor.AddStyleSheetPath(this, "Styles/LogicDetailNodeView");
 
             _connectorListener = connectorListener;
             NodeEditor = nodeEditor;
@@ -73,29 +73,11 @@ namespace GeoTetra.GTLogicGraph
         }
 
         public override void OnSelected()
-        {
-            /*NodeEditor.DetailView.Clear();
-
-            var gn = new LogicNodeView();
-            gn.Initialize(NodeEditor, null);
-            gn.SetEnabled(true);
-            gn.SetPosition(new Rect(0, 0, 100, 100));
-            NodeEditor.DetailView.Add(gn);
-
-            //*** Eventually, NodeEditor.BuildDetailView(NodeEditor.DetailView);
-
-            var miniMap = new MiniMap();
-            miniMap.SetPosition(new Rect(0, 0, 200, 176));
-            NodeEditor.DetailView.Add(miniMap);
-
-
-            Debug.Log("SELECTED " + NodeEditor.GetType().Name);*/
+        {           
         }
 
         public override void OnUnselected()
         {
-            /*NodeEditor.DetailView.Clear();
-            Debug.Log("UNSELECTED");*/
         }
 
         public override bool expanded

@@ -68,6 +68,7 @@ namespace GeoTetra.GTLogicGraph
     [Serializable]
     public enum PortValueType
     {
+        Float,
         Vector4,
         Vector3,
         Vector2,

@@ -1,13 +1,12 @@
 ﻿using GeoTetra.GTLogicGraph.Slots;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
 {
-    [Title("Signal", "Band Pass Filter")]
-    [NodeDetailEditorType(typeof(BandPassFilterLogicNodeDetail))]
-    public class BandPassFilterNodeDetailEditor : NodeDetailEditor
+    [Title("Actuator", "Motor Parameters")]
+    [NodeDetailEditorType(typeof(MotorParametersLogicNodeDetail))]
+    public class MotorParametersNodeDetailEditor : NodeDetailEditor
     {
         [Serializable]
         public class Parameters
@@ -18,33 +17,31 @@ namespace GeoTetra.GTLogicGraph
 
         [SerializeField]
         private Parameters _params;
-        
+
         [SerializeField]
-        private List<float> _curveValue;
-        
-        [NodeDetailCurveControl("Wavelength curve")]
-        public CurveDetailData CurveValue
+        private double _kM;
+
+        [LabelDetailControl("kM")]
+        public LabelDetailData PValue
         {
-            get { return new CurveDetailData(_curveValue); }
+            get { return new LabelDetailData(_kM.ToString()); }
             set
             {
-                if (_curveValue == value.data)
-                    return;
-                _curveValue = value.data;
+                _kM = Convert.ToDouble(value.data);
                 SetDirty();
             }
         }
 
         public override void ConstructNode()
         {
-            DisplayName = "Band Pass Filter";
+            DisplayName = "Motor Parameters";
 
             AddSlot(new TriggerDetailPortDescription(this, "Trigger", "In", PortDetailDirection.Input));
             AddSlot(new TriggerDetailPortDescription(this, "Trigger", "Out", PortDetailDirection.Output));
         }
     }
 
-    public class BandPassFilterLogicNodeDetail : LogicNode
+    public class MotorParametersLogicNodeDetail : LogicNode
     {
         [NodePort]
         public event Action<float> Vector1Output;

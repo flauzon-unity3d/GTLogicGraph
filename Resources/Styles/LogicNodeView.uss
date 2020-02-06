@@ -20,6 +20,13 @@ LogicNodeView #title-label {
     padding-left: 2px;
 }
 
+#title {
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: rgba(43,43,153,0.8);
+    height: 36px;
+}
+
 LogicNodeView #collapsible-area {
     width: 0;
     height: 0;
@@ -32,7 +39,7 @@ LogicNodeView #previewFiller.expanded {
 
 LogicNodeView #previewFiller,
 LogicNodeView #controls {
-    background-color: rgba(63, 63, 93, 0.8);
+    background-color: rgba(43, 43, 43, 0.8);
 }
 
 LogicNodeView #controls > #items {

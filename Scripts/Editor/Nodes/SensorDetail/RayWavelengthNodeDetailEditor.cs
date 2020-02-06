@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
 {
-    [Title("Signal", "Band Pass Filter")]
-    [NodeDetailEditorType(typeof(BandPassFilterLogicNodeDetail))]
-    public class BandPassFilterNodeDetailEditor : NodeDetailEditor
+    [Title("Photon", "Ray Wavelength")]
+    [NodeDetailEditorType(typeof(RayWavelengthLogicNodeDetail))]
+    public class RayWavelengthNodeDetailEditor : NodeDetailEditor
     {
         [Serializable]
         public class Parameters
@@ -18,10 +18,10 @@ namespace GeoTetra.GTLogicGraph
 
         [SerializeField]
         private Parameters _params;
-        
+
         [SerializeField]
         private List<float> _curveValue;
-        
+
         [NodeDetailCurveControl("Wavelength curve")]
         public CurveDetailData CurveValue
         {
@@ -37,14 +37,14 @@ namespace GeoTetra.GTLogicGraph
 
         public override void ConstructNode()
         {
-            DisplayName = "Band Pass Filter";
+            DisplayName = "Ray Wavelength";
 
             AddSlot(new TriggerDetailPortDescription(this, "Trigger", "In", PortDetailDirection.Input));
             AddSlot(new TriggerDetailPortDescription(this, "Trigger", "Out", PortDetailDirection.Output));
         }
     }
 
-    public class BandPassFilterLogicNodeDetail : LogicNode
+    public class RayWavelengthLogicNodeDetail : LogicNode
     {
         [NodePort]
         public event Action<float> Vector1Output;

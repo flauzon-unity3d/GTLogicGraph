@@ -7,15 +7,19 @@ using UnityEngine.UIElements;
 namespace GeoTetra.GTLogicGraph
 {
 	public class LogicDetailGraphView : GraphView
-	{		
-		public LogicGraphEditorObject LogicGraphEditorObject { get; private set; }
+	{
+        public LogicGraphEditorView EditorView = null;
+        public LogicGraphEditorObject LogicGraphEditorObject { get; private set; }
+        public LogicGraphView ParentGraphView = null;
 		
-		public LogicDetailGraphView()
+		public LogicDetailGraphView(LogicGraphEditorView editorView, LogicGraphView parentView)
 		{
+            EditorView = editorView;
+            ParentGraphView = parentView;
             GraphLogicEditor.AddStyleSheetPath(this, "Styles/LogicDetailGraphView");
 		}
 		
-		public LogicDetailGraphView(LogicGraphEditorObject logicGraphEditorObject) : this()
+		public LogicDetailGraphView(LogicGraphEditorView editorView, LogicGraphEditorObject logicGraphEditorObject, LogicGraphView parentView) : this(editorView, parentView)
 		{
 			LogicGraphEditorObject = logicGraphEditorObject;
 		}

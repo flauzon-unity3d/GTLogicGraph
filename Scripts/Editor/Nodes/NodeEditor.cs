@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
@@ -12,17 +14,32 @@ namespace GeoTetra.GTLogicGraph
     {
         [NonSerialized] private List<PortDescription> _portDescriptions = new List<PortDescription>();
 
-        [SerializeField] private string _displayName;
-        
+        [SerializeField] private string _displayName;        
         [SerializeField] private Vector3 _position;
-
         [SerializeField] private bool _expanded = true;
-
         [SerializeField] private string _nodeGuid;
+        
+        [SerializeField]
+        private List<SerializedNode> _serializedDetailNodes = new List<SerializedNode>();
+
+        [SerializeField]
+        private List<SerializedEdge> _serializedDetailEdges = new List<SerializedEdge>();
+
 
         public LogicGraphView Owner { get; set; }
         public LogicDetailGraphView DetailView { get; set; }
         public SerializedNode SerializedNode { get; set; }
+
+        public List<SerializedEdge> SerializedDetailEdges
+        {
+            get { return _serializedDetailEdges; }
+        }
+
+        public List<SerializedNode> SerializedDetailNodes
+        {
+            get { return _serializedDetailNodes; }
+        }
+
 
         public Vector3 Position
         {
@@ -152,6 +169,83 @@ namespace GeoTetra.GTLogicGraph
             }
 
             return default(T);
+        }
+
+        private void AddNodeFromLoad(SerializedNode serializedNode)
+        {
+            NodeDetailEditor nodeEditor = null;
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (var type in assembly.GetTypes())
+                {
+                    if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(NodeDetailEditor)))
+                    {
+                        var attrs = type.GetCustomAttributes(typeof(NodeDetailEditorType), false) as NodeDetailEditorType[];
+                        if (attrs != null && attrs.Length > 0)
+                        {
+                            if (attrs[0].NodeType.Name == serializedNode.NodeType)
+                            {
+                                nodeEditor = (NodeDetailEditor)Activator.CreateInstance(type);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (nodeEditor != null)
+            {                
+                JsonUtility.FromJsonOverwrite(serializedNode.JSON, nodeEditor);
+                nodeEditor.SerializedNode = serializedNode;
+                nodeEditor.Owner = Owner;
+                nodeEditor.DetailView = DetailView;
+                var nodeView = new LogicDetailNodeView { userData = nodeEditor };
+                DetailView.AddElement(nodeView);
+                nodeView.Initialize(nodeEditor, Owner.EditorView.EdgeDetailConnectorListener);
+                nodeView.MarkDirtyRepaint();
+            }
+            else
+            {
+                Debug.LogWarning("No NodeEditor found for " + serializedNode);
+            }
+        }
+
+        private void AddEdgeFromLoad(SerializedEdge serializedEdge)
+        {
+            LogicDetailNodeView sourceNodeView = DetailView.nodes.ToList().OfType<LogicDetailNodeView>()
+                .FirstOrDefault(x => x.NodeEditor.NodeGuid == serializedEdge.SourceNodeGuid);
+            if (sourceNodeView != null)
+            {
+                PortDetailView sourceAnchor = sourceNodeView.outputContainer.Children().OfType<PortDetailView>()
+                    .FirstOrDefault(x => x.PortDescription.MemberName == serializedEdge.SourceMemberName);
+
+                LogicDetailNodeView targetNodeView = DetailView.nodes.ToList().OfType<LogicDetailNodeView>()
+                    .FirstOrDefault(x => x.NodeEditor.NodeGuid == serializedEdge.TargetNodeGuid);
+                PortDetailView targetAnchor = targetNodeView.inputContainer.Children().OfType<PortDetailView>()
+                    .FirstOrDefault(x => x.PortDescription.MemberName == serializedEdge.TargetMemberName);
+
+                var edgeView = new Edge
+                {
+                    userData = serializedEdge,
+                    output = sourceAnchor,
+                    input = targetAnchor
+                };
+                edgeView.output.Connect(edgeView);
+                edgeView.input.Connect(edgeView);
+                DetailView.AddElement(edgeView);
+            }
+        }
+
+        public void BuildDetailView(LogicDetailGraphView detailView)
+        {
+            for (int i = 0; i < _serializedDetailNodes.Count; ++i)
+            {
+                AddNodeFromLoad(_serializedDetailNodes[i]);
+            }
+
+            for (int i = 0; i < _serializedDetailEdges.Count; ++i)
+            {
+                AddEdgeFromLoad(_serializedDetailEdges[i]);
+            }
         }
     }
 }

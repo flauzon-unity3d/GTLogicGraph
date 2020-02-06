@@ -28,7 +28,8 @@ namespace GeoTetra.GTLogicGraph
 
         public void OnDrop(GraphView graphView, Edge edge)
         {
-            _logicGraphEditorView.AddDetailEdge(edge);
+            LogicDetailGraphView view = graphView as LogicDetailGraphView;            
+            _logicGraphEditorView.AddDetailEdge(edge, view.ParentGraphView.ContextNode);
         }
     }
 }

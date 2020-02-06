@@ -9,7 +9,7 @@ namespace GeoTetra.GTLogicGraph
         PortDetailView(Orientation portOrientation, Direction portDirection, Capacity portCapacity, Type type)
             : base(portOrientation, portDirection, portCapacity, type)
         {
-            GraphLogicEditor.AddStyleSheetPath(this, "Styles/LogicPort");
+            GraphLogicEditor.AddStyleSheetPath(this, "Styles/LogicDetailPort");
         }
 
         PortDetailDescription _portDescription;

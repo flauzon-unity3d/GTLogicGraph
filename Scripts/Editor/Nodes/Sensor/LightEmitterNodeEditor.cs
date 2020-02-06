@@ -10,7 +10,7 @@ namespace GeoTetra.GTLogicGraph
     {
         [SerializeField]
         private float _value;
-       
+
         public override void ConstructNode()
         {
             DisplayName = "Light Emitter";

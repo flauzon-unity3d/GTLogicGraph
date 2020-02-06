@@ -1,0 +1,78 @@
+{
+    "_serializedInputNodes": [],
+    "_serializedOutputNodes": [],
+    "_serializedNodes": [
+        {
+            "NodeType": "LightEmitterLogicNode",
+            "JSON": "{\"_displayName\":\"Light Emitter\",\"_position\":{\"x\":-471.0,\"y\":337.0,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"af9e6ec3-a119-4783-907b-2b405c7e517d\",\"_serializedDetailNodes\":[{\"NodeType\":\"RayDistributionLogicNodeDetail\",\"JSON\":\"{\\\"_displayName\\\":\\\"Ray Distribution\\\",\\\"_position\\\":{\\\"x\\\":566.0,\\\"y\\\":25.0,\\\"z\\\":0.0},\\\"_expanded\\\":true,\\\"_nodeGuid\\\":\\\"b64100f3-e7ce-44f7-8109-b2e62c2a7da2\\\",\\\"_params\\\":{\\\"sensitivityCurveWavelength\\\":[]}}\"},{\"NodeType\":\"RayWavelengthLogicNodeDetail\",\"JSON\":\"{\\\"_displayName\\\":\\\"Ray Wavelength\\\",\\\"_position\\\":{\\\"x\\\":800.0,\\\"y\\\":27.0,\\\"z\\\":0.0},\\\"_expanded\\\":true,\\\"_nodeGuid\\\":\\\"f2681d55-039b-485b-8607-51e95a505f26\\\",\\\"_params\\\":{\\\"sensitivityCurveWavelength\\\":[]}}\"}],\"_serializedDetailEdges\":[{\"SourceNodeGuid\":\"b64100f3-e7ce-44f7-8109-b2e62c2a7da2\",\"SourceMemberName\":\"Trigger\",\"TargetNodeGuid\":\"f2681d55-039b-485b-8607-51e95a505f26\",\"TargetMemberName\":\"Trigger\"}],\"_value\":0.0}"
+        },
+        {
+            "NodeType": "PhotoDetectorLogicNode",
+            "JSON": "{\"_displayName\":\"Photo Detector\",\"_position\":{\"x\":-164.0,\"y\":346.0,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"97494083-dd02-4362-aaf5-96cc2622ea04\",\"_serializedDetailNodes\":[{\"NodeType\":\"CCDLogicNodeDetail\",\"JSON\":\"{\\\"_displayName\\\":\\\"CCD\\\",\\\"_position\\\":{\\\"x\\\":550.0,\\\"y\\\":-8.0,\\\"z\\\":0.0},\\\"_expanded\\\":true,\\\"_nodeGuid\\\":\\\"0107cfa9-c998-460c-9c31-212e2cb4a4c7\\\",\\\"_params\\\":{\\\"sensitivityCurveWavelength\\\":[]}}\"},{\"NodeType\":\"PixelArrayLogicNodeDetail\",\"JSON\":\"{\\\"_displayName\\\":\\\"Pixel Array\\\",\\\"_position\\\":{\\\"x\\\":1145.0,\\\"y\\\":-8.0,\\\"z\\\":0.0},\\\"_expanded\\\":true,\\\"_nodeGuid\\\":\\\"a8e8985d-3028-4a87-b820-da1b59f6f5aa\\\",\\\"_params\\\":{\\\"sensitivityCurveWavelength\\\":[]}}\"},{\"NodeType\":\"AmplifierLogicNodeDetail\",\"JSON\":\"{\\\"_displayName\\\":\\\"Amplifier\\\",\\\"_position\\\":{\\\"x\\\":690.0,\\\"y\\\":-8.0,\\\"z\\\":0.0},\\\"_expanded\\\":true,\\\"_nodeGuid\\\":\\\"9acbac71-6368-4769-a85a-cb9bd3cc4c39\\\",\\\"_params\\\":{\\\"sensitivityCurveWavelength\\\":[]}}\"},{\"NodeType\":\"BandPassFilterLogicNodeDetail\",\"JSON\":\"{\\\"_displayName\\\":\\\"Band Pass Filter\\\",\\\"_position\\\":{\\\"x\\\":916.0,\\\"y\\\":-8.0,\\\"z\\\":0.0},\\\"_expanded\\\":true,\\\"_nodeGuid\\\":\\\"88e5ee6e-c010-4815-94e9-232a429370e0\\\",\\\"_params\\\":{\\\"sensitivityCurveWavelength\\\":[]}}\"}],\"_serializedDetailEdges\":[{\"SourceNodeGuid\":\"0107cfa9-c998-460c-9c31-212e2cb4a4c7\",\"SourceMemberName\":\"Trigger\",\"TargetNodeGuid\":\"9acbac71-6368-4769-a85a-cb9bd3cc4c39\",\"TargetMemberName\":\"Trigger\"},{\"SourceNodeGuid\":\"9acbac71-6368-4769-a85a-cb9bd3cc4c39\",\"SourceMemberName\":\"Trigger\",\"TargetNodeGuid\":\"88e5ee6e-c010-4815-94e9-232a429370e0\",\"TargetMemberName\":\"Trigger\"},{\"SourceNodeGuid\":\"88e5ee6e-c010-4815-94e9-232a429370e0\",\"SourceMemberName\":\"Trigger\",\"TargetNodeGuid\":\"a8e8985d-3028-4a87-b820-da1b59f6f5aa\",\"TargetMemberName\":\"Trigger\"}],\"_params\":{\"sensitivityCurveWavelength\":[]}}"
+        },
+        {
+            "NodeType": "DataConverterLogicNode",
+            "JSON": "{\"_displayName\":\"Ray Converter\",\"_position\":{\"x\":151.0,\"y\":358.0,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"503eb10e-86e4-4967-8a52-96d8e4324687\",\"_serializedDetailNodes\":[],\"_serializedDetailEdges\":[],\"_value\":0.0}"
+        },
+        {
+            "NodeType": "DataCastToComputeBufferLogicNode",
+            "JSON": "{\"_displayName\":\"Data Cast To ComputeBuffer\",\"_position\":{\"x\":492.0,\"y\":315.0,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"b38dab4f-f857-4a40-ac79-ed3db5efd709\",\"_serializedDetailNodes\":[],\"_serializedDetailEdges\":[],\"_value\":0.0}"
+        },
+        {
+            "NodeType": "DataCastToTextureLogicNode",
+            "JSON": "{\"_displayName\":\"Data Cast To Texture\",\"_position\":{\"x\":494.0,\"y\":402.0,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"0ad8a5cf-ed3a-45ad-a286-ad1e12cc21da\",\"_serializedDetailNodes\":[],\"_serializedDetailEdges\":[],\"_value\":0.0}"
+        },
+        {
+            "NodeType": "MotorLogicNode",
+            "JSON": "{\"_displayName\":\"Motor\",\"_position\":{\"x\":-784.0,\"y\":326.0,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"5d5c4d26-2f5e-4b35-96d6-6f5d0ae6bcfb\",\"_serializedDetailNodes\":[{\"NodeType\":\"MotorParametersLogicNodeDetail\",\"JSON\":\"{\\\"_displayName\\\":\\\"Motor Parameters\\\",\\\"_position\\\":{\\\"x\\\":570.0,\\\"y\\\":-1.0,\\\"z\\\":0.0},\\\"_expanded\\\":true,\\\"_nodeGuid\\\":\\\"717a98e7-7a0c-45b1-a110-f5e47a394d44\\\",\\\"_params\\\":{\\\"sensitivityCurveWavelength\\\":[]}}\"},{\"NodeType\":\"PIDControllerLogicNodeDetail\",\"JSON\":\"{\\\"_displayName\\\":\\\"PID Controller\\\",\\\"_position\\\":{\\\"x\\\":821.0,\\\"y\\\":0.0,\\\"z\\\":0.0},\\\"_expanded\\\":true,\\\"_nodeGuid\\\":\\\"a39038dc-0182-4621-8abf-6b42d8ad1094\\\",\\\"_params\\\":{\\\"sensitivityCurveWavelength\\\":[]}}\"},{\"NodeType\":\"EfficiencyLogicNodeDetail\",\"JSON\":\"{\\\"_displayName\\\":\\\"Efficiency\\\",\\\"_position\\\":{\\\"x\\\":1085.0,\\\"y\\\":1.0,\\\"z\\\":0.0},\\\"_expanded\\\":true,\\\"_nodeGuid\\\":\\\"9bba3ea2-2146-40a6-8b26-a53c22c882d9\\\",\\\"_params\\\":{\\\"sensitivityCurveWavelength\\\":[]}}\"}],\"_serializedDetailEdges\":[{\"SourceNodeGuid\":\"717a98e7-7a0c-45b1-a110-f5e47a394d44\",\"SourceMemberName\":\"Trigger\",\"TargetNodeGuid\":\"a39038dc-0182-4621-8abf-6b42d8ad1094\",\"TargetMemberName\":\"Trigger\"},{\"SourceNodeGuid\":\"a39038dc-0182-4621-8abf-6b42d8ad1094\",\"SourceMemberName\":\"Trigger\",\"TargetNodeGuid\":\"9bba3ea2-2146-40a6-8b26-a53c22c882d9\",\"TargetMemberName\":\"Trigger\"}],\"_value\":0.0}"
+        },
+        {
+            "NodeType": "PowerSupplyLogicNode",
+            "JSON": "{\"_displayName\":\"Power Supply\",\"_position\":{\"x\":-1107.0,\"y\":270.0,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"0f0d18df-537b-423e-9596-3e0bec4f0f71\",\"_serializedDetailNodes\":[{\"NodeType\":\"EfficiencyLogicNodeDetail\",\"JSON\":\"{\\\"_displayName\\\":\\\"Efficiency\\\",\\\"_position\\\":{\\\"x\\\":639.0,\\\"y\\\":17.0,\\\"z\\\":0.0},\\\"_expanded\\\":true,\\\"_nodeGuid\\\":\\\"1d05c411-b154-48f5-b911-75518ea1b9b3\\\",\\\"_params\\\":{\\\"sensitivityCurveWavelength\\\":[]}}\"},{\"NodeType\":\"LossLogicNodeDetail\",\"JSON\":\"{\\\"_displayName\\\":\\\"Loss\\\",\\\"_position\\\":{\\\"x\\\":961.0,\\\"y\\\":17.0,\\\"z\\\":0.0},\\\"_expanded\\\":true,\\\"_nodeGuid\\\":\\\"e7c4ddf7-0bd8-41a7-bd69-979597de76f4\\\",\\\"_params\\\":{\\\"sensitivityCurveWavelength\\\":[]}}\"}],\"_serializedDetailEdges\":[{\"SourceNodeGuid\":\"1d05c411-b154-48f5-b911-75518ea1b9b3\",\"SourceMemberName\":\"Trigger\",\"TargetNodeGuid\":\"e7c4ddf7-0bd8-41a7-bd69-979597de76f4\",\"TargetMemberName\":\"Trigger\"}],\"_value\":0.0}"
+        }
+    ],
+    "_serializedEdges": [
+        {
+            "SourceNodeGuid": "af9e6ec3-a119-4783-907b-2b405c7e517d",
+            "SourceMemberName": "Photon",
+            "TargetNodeGuid": "97494083-dd02-4362-aaf5-96cc2622ea04",
+            "TargetMemberName": "Photon"
+        },
+        {
+            "SourceNodeGuid": "97494083-dd02-4362-aaf5-96cc2622ea04",
+            "SourceMemberName": "Photon",
+            "TargetNodeGuid": "503eb10e-86e4-4967-8a52-96d8e4324687",
+            "TargetMemberName": "Photon"
+        },
+        {
+            "SourceNodeGuid": "97494083-dd02-4362-aaf5-96cc2622ea04",
+            "SourceMemberName": "PixelArray",
+            "TargetNodeGuid": "503eb10e-86e4-4967-8a52-96d8e4324687",
+            "TargetMemberName": "PixelArray"
+        },
+        {
+            "SourceNodeGuid": "503eb10e-86e4-4967-8a52-96d8e4324687",
+            "SourceMemberName": "DataArray",
+            "TargetNodeGuid": "b38dab4f-f857-4a40-ac79-ed3db5efd709",
+            "TargetMemberName": "DataArray"
+        },
+        {
+            "SourceNodeGuid": "503eb10e-86e4-4967-8a52-96d8e4324687",
+            "SourceMemberName": "DataArray",
+            "TargetNodeGuid": "0ad8a5cf-ed3a-45ad-a286-ad1e12cc21da",
+            "TargetMemberName": "DataArray"
+        },
+        {
+            "SourceNodeGuid": "5d5c4d26-2f5e-4b35-96d6-6f5d0ae6bcfb",
+            "SourceMemberName": "Transform",
+            "TargetNodeGuid": "af9e6ec3-a119-4783-907b-2b405c7e517d",
+            "TargetMemberName": "Transform"
+        },
+        {
+            "SourceNodeGuid": "0f0d18df-537b-423e-9596-3e0bec4f0f71",
+            "SourceMemberName": "Trigger",
+            "TargetNodeGuid": "5d5c4d26-2f5e-4b35-96d6-6f5d0ae6bcfb",
+            "TargetMemberName": "Trigger"
+        }
+    ]
+}

@@ -20,10 +20,26 @@ namespace GeoTetra.GTLogicGraph
         private SearchWindowProvider _searchWindowProvider;
         private SearchDetailWindowProvider _searchDetailWindowProvider;
         private bool _reloadGraph;
+        private IMGUIContainer _toolbarDetail;
 
         public Action saveRequested { get; set; }
 
         public Action showInProjectRequested { get; set; }
+
+        public IMGUIContainer ToolbarDetail
+        { 
+            get { return _toolbarDetail;  }
+        }
+
+        public EdgeConnectorListener EdgeConnectorListener
+        {
+            get { return _edgeConnectorListener; }
+        }
+
+        public EdgeDetailConnectorListener EdgeDetailConnectorListener
+        {
+            get { return _edgeDetailConnectorListener; }
+        }
 
         public LogicGraphView LogicGraphView
         {
@@ -44,7 +60,7 @@ namespace GeoTetra.GTLogicGraph
                 GUILayout.BeginHorizontal(EditorStyles.toolbar);
                 
                 GUILayout.Label(Path.GetFileName(_editorWindow.name));
-                GUILayout.Space(32.0f);
+                GUILayout.FlexibleSpace();
                 
                 if (GUILayout.Button("Save Asset", EditorStyles.toolbarButton))
                 {
@@ -59,7 +75,13 @@ namespace GeoTetra.GTLogicGraph
                         showInProjectRequested();
                 }
 
-                GUILayout.FlexibleSpace();
+                GUILayout.Space(6);
+                if (GUILayout.Button("Generate", EditorStyles.toolbarButton))
+                {
+                    //***
+                }
+                
+                GUILayout.Space(6);                
                 GUILayout.EndHorizontal();
             });
             Add(toolbar);
@@ -69,7 +91,7 @@ namespace GeoTetra.GTLogicGraph
 
             var mainGraph = new VisualElement {name = "mainGraph"};
             {
-                _graphView = new LogicGraphView(_logicGraphEditorObject)
+                _graphView = new LogicGraphView(this, _logicGraphEditorObject)
                 {
                     name = "GraphView",
                     viewDataKey = "LogicGraphView"
@@ -84,18 +106,14 @@ namespace GeoTetra.GTLogicGraph
                 _graphView.AddManipulator(new FreehandSelector());
                 _graphView.RegisterCallback<KeyDownEvent>(KeyDown);
 
-                //*** Test... _graphView.Insert(0, new GridBackground());
                 _graphView.focusable = true;
                 
                 _graphView.graphViewChanged = GraphViewChanged;
 
-                // Add the minimap.
-                var miniMap = new MiniMap();
-                miniMap.SetPosition(new Rect(0, 372, 200, 176));
-                _graphView.Add(miniMap);
-
                 var blackBoard = new Blackboard();
-                blackBoard.SetPosition(new Rect(0, 0, 64, 64));
+                blackBoard.SetPosition(new Rect(4, 40, 300, 100));
+                blackBoard.title = "Properties";
+                blackBoard.subTitle = String.Empty;
                 _graphView.Add(blackBoard);
 
                 _graphView.StretchToParentSize();
@@ -104,7 +122,7 @@ namespace GeoTetra.GTLogicGraph
 
             var detailGraph = new VisualElement {name = "detailGraph"};
             {
-                _detailGraphView = new LogicDetailGraphView(_logicGraphEditorObject)
+                _detailGraphView = new LogicDetailGraphView(this, _logicGraphEditorObject, _graphView)
                 {
                     name = "DetailGraphView",
                     viewDataKey = "LogicDetailGraphView"
@@ -112,8 +130,7 @@ namespace GeoTetra.GTLogicGraph
                 
                 _detailGraphView.SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
                 _detailGraphView.AddManipulator(new ContentDragger());
-                _detailGraphView.AddManipulator(new SelectionDragger());
-                _detailGraphView.AddManipulator(new RectangleSelector());
+                _detailGraphView.AddManipulator(new CustomSelectionDragger());                
                 _detailGraphView.AddManipulator(new ClickSelector());
                 _detailGraphView.AddManipulator(new EdgeManipulator());
                 _detailGraphView.AddManipulator(new FreehandSelector());
@@ -122,17 +139,52 @@ namespace GeoTetra.GTLogicGraph
                 _detailGraphView.focusable = true;
                 
                 _detailGraphView.graphViewChanged = GraphViewChanged;
-
                 _detailGraphView.style.backgroundColor = new Color(0.05f, 0.05f, 0.05f);
-
-                var miniMap = new MiniMap();
-                miniMap.SetPosition(new Rect(0, 0, 200, 176));
-                _detailGraphView.Add(miniMap);
-
 
                 _detailGraphView.StretchToParentSize();
                 detailGraph.Add(_detailGraphView);
             }
+
+            var labelTitle = new IMGUIContainer(() =>
+            {
+                GUILayout.BeginVertical();
+                GUILayout.Space(24.0f);
+                
+                GUILayout.BeginHorizontal(EditorStyles.label);                
+                GUILayout.FlexibleSpace();
+                GUIStyle style = new GUIStyle();
+                style.font = EditorStyles.boldFont;
+                style.normal.textColor = Color.white;
+                style.fontSize = 20;
+
+                GUILayout.Label("Sensor Graph", style, GUILayout.Height(24));
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+
+                GUILayout.EndVertical();
+            });
+            mainGraph.Add(labelTitle);
+
+            _toolbarDetail = new IMGUIContainer(() =>
+            {
+                GUILayout.BeginVertical();
+                GUILayout.Space(4.0f);
+
+                GUILayout.BeginHorizontal(EditorStyles.label);
+                GUILayout.FlexibleSpace();
+                GUIStyle style = new GUIStyle();
+                style.font = EditorStyles.boldFont;
+                style.normal.textColor = Color.white;
+                style.fontSize = 20;
+
+                GUILayout.Label("Node simulation detail", style, GUILayout.Height(24));
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+
+                GUILayout.EndVertical();
+            });
+            detailGraph.Add(_toolbarDetail);
+
 
             // GraphView node creation search
             _searchWindowProvider = ScriptableObject.CreateInstance<SearchWindowProvider>();
@@ -148,7 +200,7 @@ namespace GeoTetra.GTLogicGraph
 
             // DetailGraphView node creation search
             _searchDetailWindowProvider = ScriptableObject.CreateInstance<SearchDetailWindowProvider>();
-            _searchDetailWindowProvider.Initialize(editorWindow, this, _detailGraphView);
+            _searchDetailWindowProvider.Initialize(editorWindow, this, _graphView, _detailGraphView);
             
             _edgeDetailConnectorListener = new EdgeDetailConnectorListener(this, _searchDetailWindowProvider);
 
@@ -239,6 +291,17 @@ namespace GeoTetra.GTLogicGraph
                         nodeEditor.Position = element.GetPosition().position;
                         nodeEditor.SerializedNode.JSON = JsonUtility.ToJson(nodeEditor);
                     }
+
+                    NodeDetailEditor nodeDetailEditor = element.userData as NodeDetailEditor;
+                    if (nodeDetailEditor != null)
+                    {
+                        nodeDetailEditor.Position = element.GetPosition().position;
+                        nodeDetailEditor.SerializedNode.JSON = JsonUtility.ToJson(nodeDetailEditor);
+                        if (nodeDetailEditor.Owner.ContextNode != null)
+                        {
+                            nodeDetailEditor.Owner.ContextNode.SetDirty();
+                        }
+                    }
                 }
             }
 
@@ -253,9 +316,36 @@ namespace GeoTetra.GTLogicGraph
                     _logicGraphEditorObject.LogicGraphData.SerializedOutputNodes.Remove(nodeView.NodeEditor.SerializedNode);
                 }
 
+                foreach (var nodeView in graphViewChange.elementsToRemove.OfType<LogicDetailNodeView>())
+                {
+                    foreach (var parentNodeView in _graphView.nodes.ToList())
+                    {
+                        LogicNodeView n = parentNodeView as LogicNodeView;
+                        if (n != null)
+                        {
+                            if (n.NodeEditor.SerializedDetailNodes.Remove(nodeView.NodeEditor.SerializedNode))
+                            {
+                                n.NodeEditor.SetDirty();
+                            }
+                        }
+                    }
+                }
+
                 foreach (var edge in graphViewChange.elementsToRemove.OfType<Edge>())
                 {
-                    _logicGraphEditorObject.LogicGraphData.SerializedEdges.Remove(edge.userData as SerializedEdge);
+                    if (!_logicGraphEditorObject.LogicGraphData.SerializedEdges.Remove(edge.userData as SerializedEdge))
+                    {
+                        // Not found in graphView, dig into graphView nodes and remove.
+                        foreach (var nodeView in _graphView.nodes.ToList())
+                        {
+                            LogicNodeView n = nodeView as LogicNodeView;
+                            if (n != null)
+                            {
+                                n.NodeEditor.SerializedDetailEdges.Remove(edge.userData as SerializedEdge);
+                                n.NodeEditor.SetDirty();
+                            }
+                        }
+                    }
                 }
             }
 
@@ -273,8 +363,13 @@ namespace GeoTetra.GTLogicGraph
             }
         }
 
-        public void AddDetailNode(NodeDetailEditor nodeEditor)
+        public void AddDetailNode(NodeDetailEditor nodeEditor, NodeEditor contextNode)
         {
+            if (contextNode == null)
+            {
+                return;
+            }
+
             _logicGraphEditorObject.RegisterCompleteObjectUndo("Add Detail Node " + nodeEditor.NodeType());
 
             SerializedNode serializedNode = new SerializedNode
@@ -282,20 +377,10 @@ namespace GeoTetra.GTLogicGraph
                 NodeType = nodeEditor.NodeType(),
                 JSON = JsonUtility.ToJson(nodeEditor)
             };
-
             nodeEditor.SerializedNode = serializedNode;
-            if (nodeEditor is IInputNode)
-            {
-                _logicGraphEditorObject.LogicGraphData.SerializedInputNodes.Add(serializedNode);
-            }
-            else if (nodeEditor is IOutputNode)
-            {
-                _logicGraphEditorObject.LogicGraphData.SerializedOutputNodes.Add(serializedNode);
-            }
-            else
-            {
-                _logicGraphEditorObject.LogicGraphData.SerializedNodes.Add(serializedNode);
-            }
+
+            // Serialize within contextNode
+            contextNode.SerializedDetailNodes.Add(serializedNode);
 
             nodeEditor.Owner = _graphView;
             nodeEditor.DetailView = _detailGraphView;
@@ -303,6 +388,8 @@ namespace GeoTetra.GTLogicGraph
             _detailGraphView.AddElement(nodeView);
             nodeView.Initialize(nodeEditor, _edgeDetailConnectorListener);
             nodeView.MarkDirtyRepaint();
+
+            contextNode.SetDirty();
         }
 
         public void AddNode(NodeEditor nodeEditor)
@@ -430,10 +517,8 @@ namespace GeoTetra.GTLogicGraph
             leftPortDescription = (edge.output as PortView).PortDescription;
             rightPortDescription = (edge.input as PortView).PortDescription;
         }
-
-
         
-        public void AddDetailEdge(Edge edgeView)
+        public void AddDetailEdge(Edge edgeView, NodeEditor contextNode)
         {
             PortDetailDescription leftPortDescription;
             PortDetailDescription rightPortDescription;
@@ -447,13 +532,14 @@ namespace GeoTetra.GTLogicGraph
                 TargetNodeGuid = rightPortDescription.Owner.NodeGuid,
                 TargetMemberName = rightPortDescription.MemberName
             };
-
-            //***_logicGraphEditorObject.LogicGraphData.SerializedEdges.Add(serializedEdge);
+            contextNode.SerializedDetailEdges.Add(serializedEdge);
 
             edgeView.userData = serializedEdge;
             edgeView.output.Connect(edgeView);
             edgeView.input.Connect(edgeView);
             _detailGraphView.AddElement(edgeView);
+
+            contextNode.SetDirty();
         }
 
         private void GetDetailSlots(Edge edge, out PortDetailDescription leftPortDescription, out PortDetailDescription rightPortDescription)
