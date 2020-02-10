@@ -8,14 +8,19 @@ namespace GeoTetra.GTLogicGraph
     [NodeEditorType(typeof(LightEmitterLogicNode))]
     public class LightEmitterNodeEditor : NodeEditor
     {
-        [SerializeField]
-        private float _value;
+        [SerializeField]        
+        private float _XChannels;
+
 
         public override void ConstructNode()
         {
             DisplayName = "Light Emitter";
 
             AddSlot(new TransformPortDescription(this, "Transform", "World", PortDirection.Input));
+            AddSlot(new FloatPortDescription(this, "Float", "X Channels", PortDirection.Input));
+            AddSlot(new FloatPortDescription(this, "Float", "Y Channels", PortDirection.Input));
+            AddSlot(new BooleanPortDescription(this, "Bool", "Batch Mode", PortDirection.Input));
+            AddSlot(new FloatPortDescription(this, "Float", "Rate", PortDirection.Input));
             AddSlot(new PhotonPortDescription(this, "Photon", "Ray", PortDirection.Output));
         }
     }

@@ -20,7 +20,7 @@ namespace GeoTetra.GTLogicGraph
 
         public string DisplayName
         {
-            get { return _displayName + " " + ValueType; }
+            get { return _displayName; }
         }
 
         public string MemberName

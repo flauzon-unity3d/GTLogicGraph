@@ -4,25 +4,25 @@ using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
 {
-    [Title("Actuator", "Motor")]
-    [NodeEditorType(typeof(MotorLogicNode))]
-    public class MotorNodeEditor : NodeEditor
+    [Title("Actuator", "Servo Motor")]
+    [NodeEditorType(typeof(ServoMotorLogicNode))]
+    public class ServoMotorNodeEditor : NodeEditor
     {
         [SerializeField]
         private float _value;
        
         public override void ConstructNode()
         {
-            DisplayName = "Motor";
+            DisplayName = "Servo Motor";
 
             AddSlot(new TriggerPortDescription(this, "Trigger", "Power", PortDirection.Input));
-            AddSlot(new FloatPortDescription(this, "Float", "Desired RPM", PortDirection.Input));
+            AddSlot(new FloatPortDescription(this, "Float", "Angle Request", PortDirection.Input));
             AddSlot(new TransformPortDescription(this, "Transform", "World", PortDirection.Input));            
-            AddSlot(new TransformPortDescription(this, "Transform", "World", PortDirection.Output));
+            AddSlot(new TransformPortDescription(this, "Transform", "World", PortDirection.Output));            
         }
     }
 
-    public class MotorLogicNode : LogicNode
+    public class ServoMotorLogicNode : LogicNode
     {
         [NodePort]
         public event Action<float> Vector1Output;

@@ -16,7 +16,7 @@ namespace GeoTetra.GTLogicGraph
             DisplayName = "Power Supply";
             
             AddSlot(new FloatPortDescription(this, "float", "Voltage", PortDirection.Input));
-            AddSlot(new FloatPortDescription(this, "float", "MaxCurrent", PortDirection.Input));
+            AddSlot(new FloatPortDescription(this, "float", "Current", PortDirection.Input));
             AddSlot(new TriggerPortDescription(this, "Trigger", "Power", PortDirection.Output));            
         }
     }

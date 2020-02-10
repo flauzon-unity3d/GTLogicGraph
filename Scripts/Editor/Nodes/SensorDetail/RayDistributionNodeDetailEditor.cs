@@ -23,6 +23,7 @@ namespace GeoTetra.GTLogicGraph
             DisplayName = "Ray Distribution";
 
             AddSlot(new TriggerDetailPortDescription(this, "Trigger", "Out", PortDetailDirection.Output));
+            AddSlot(new TriggerDetailPortDescription(this, "Trigger", "Mode", PortDetailDirection.Input));
         }
     }
 

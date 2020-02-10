@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Edge = UnityEditor.Experimental.GraphView.Edge;
@@ -21,6 +22,17 @@ namespace GeoTetra.GTLogicGraph
         private SearchDetailWindowProvider _searchDetailWindowProvider;
         private bool _reloadGraph;
         private IMGUIContainer _toolbarDetail;
+        
+        public enum eAccuracyLevel
+        {
+            Lowest = 0,
+            Low,
+            Medium,
+            High,
+            Highest
+        }
+
+        private eAccuracyLevel _accuracyLevel = eAccuracyLevel.Lowest;
 
         public Action saveRequested { get; set; }
 
@@ -61,7 +73,11 @@ namespace GeoTetra.GTLogicGraph
                 
                 GUILayout.Label(Path.GetFileName(_editorWindow.name));
                 GUILayout.FlexibleSpace();
+
+                _accuracyLevel = (eAccuracyLevel)EditorGUILayout.EnumPopup("Viewing Profile:", _accuracyLevel, GUILayout.MinWidth(220));
+                //*** TODO Logic when changing selection
                 
+
                 if (GUILayout.Button("Save Asset", EditorStyles.toolbarButton))
                 {
                     if (saveRequested != null)
