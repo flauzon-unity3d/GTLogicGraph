@@ -7,16 +7,18 @@ namespace GeoTetra.GTLogicGraph
     [Title("Data", "Data Cast To Texture")]
     [NodeEditorType(typeof(DataCastToTextureLogicNode))]
     public class DataCastToTextureNodeEditor : NodeEditor
-    {
+    {        
         [SerializeField]
-        private float _value;
+        private float _dataArray;
+        [NonSerialized]
+        private float _texture;
        
         public override void ConstructNode()
         {
             DisplayName = "Data Cast To Texture";
-            
-            AddSlot(new DataArrayPortDescription(this, "DataArray", "From", PortDirection.Input));
-            AddSlot(new TexturePortDescription(this, "Texture", "To", PortDirection.Output));
+
+            AddVarSlot("From", PortDirection.Input, _dataArray);
+            AddVarSlot("To", PortDirection.Output, _texture);
         }
     }
 

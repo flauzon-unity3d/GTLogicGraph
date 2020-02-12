@@ -1,6 +1,8 @@
-﻿using System;
+﻿using GeoTetra.GTLogicGraph.Slots;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
@@ -12,7 +14,7 @@ namespace GeoTetra.GTLogicGraph
     [Serializable]
     public abstract class NodeEditor
     {
-        [NonSerialized] private List<PortDescription> _portDescriptions = new List<PortDescription>();
+        [NonSerialized] private List<IPortDescription> _portDescriptions = new List<IPortDescription>();
 
         [SerializeField] private string _displayName;        
         [SerializeField] private Vector3 _position;
@@ -96,25 +98,25 @@ namespace GeoTetra.GTLogicGraph
             }
         }
 
-        public void GetInputSlots<T>(List<T> foundSlots) where T : PortDescription
+        public void GetInputSlots<T>(List<T> foundSlots) where T : IPortDescription
         {
             foreach (var slot in _portDescriptions)
             {
-                if (slot.isInputSlot && slot is T)
+                if (slot.IsInputSlot && slot is T)
                     foundSlots.Add((T) slot);
             }
         }
 
-        public void GetOutputSlots<T>(List<T> foundSlots) where T : PortDescription
+        public void GetOutputSlots<T>(List<T> foundSlots) where T : IPortDescription
         {
             foreach (var slot in _portDescriptions)
             {
-                if (slot.isOutputSlot && slot is T)
+                if (slot.IsOutputSlot && slot is T)
                     foundSlots.Add((T) slot);
             }
         }
 
-        public void GetSlots<T>(List<T> foundSlots) where T : PortDescription
+        public void GetSlots<T>(List<T> foundSlots) where T : IPortDescription
         {
             foreach (var slot in _portDescriptions)
             {
@@ -128,43 +130,58 @@ namespace GeoTetra.GTLogicGraph
             SerializedNode.JSON = JsonUtility.ToJson(this);
         }
 
-        public void AddSlot(PortDescription portDescription)
+        public void AddVarSlot<T>(string name, PortDirection portDirection, T refData)
         {
-            if (!(portDescription is PortDescription))
-                throw new ArgumentException(string.Format(
-                    "Trying to add slot {0} to Material node {1}, but it is not a {2}", portDescription, this,
-                    typeof(PortDescription)));
+            if (refData == null)
+            {                
+                Debug.LogError("[AddVarSlot] refData is null.");
+                return;
+            }
 
+            AddSlot(new PortDescription<T>(this, typeof(T).Name, name, refData, portDirection));
+        }
+
+        public void AddSlot(IPortDescription portDescription)
+        {
+            if (!(portDescription is IPortDescription))
+            {
+                throw new ArgumentException(string.Format("Trying to add slot {0} to Material node {1}, but it is not a {2}", portDescription, this,
+                    typeof(IPortDescription)));
+            }
             _portDescriptions.Add(portDescription);
         }
 
-        public T FindSlot<T>(string memberName) where T : PortDescription
+        public T FindSlot<T>(string memberName) where T : IPortDescription
         {
             foreach (var slot in _portDescriptions)
             {
                 if (slot.MemberName == memberName && slot is T)
-                    return (T) slot;
+                {
+                    return (T)slot;
+                }
             }
 
             return default(T);
         }
 
-        public T FindInputSlot<T>(string memberName) where T : PortDescription
+        public T FindInputSlot<T>(string memberName) where T : IPortDescription
         {
             foreach (var slot in _portDescriptions)
             {
-                if (slot.isInputSlot && slot.MemberName == memberName && slot is T)
-                    return (T) slot;
+                if (slot.IsInputSlot && slot.MemberName == memberName && slot is T)
+                {
+                    return (T)slot;
+                }
             }
 
             return default(T);
         }
 
-        public T FindOutputSlot<T>(string memberName) where T : PortDescription
+        public T FindOutputSlot<T>(string memberName) where T : IPortDescription
         {
             foreach (var slot in _portDescriptions)
             {
-                if (slot.isOutputSlot && slot.MemberName == memberName && slot is T)
+                if (slot.IsOutputSlot && slot.MemberName == memberName && slot is T)
                     return (T) slot;
             }
 
@@ -231,6 +248,7 @@ namespace GeoTetra.GTLogicGraph
                 };
                 edgeView.output.Connect(edgeView);
                 edgeView.input.Connect(edgeView);
+
                 DetailView.AddElement(edgeView);
             }
         }

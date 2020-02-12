@@ -9,16 +9,25 @@ namespace GeoTetra.GTLogicGraph
     public class MotorNodeEditor : NodeEditor
     {
         [SerializeField]
-        private float _value;
-       
+        private float _power;
+        [SerializeField]
+        private float _desiredRPM;
+        [SerializeField]
+        private Vector3 _positionWorld = new Vector3();
+        [SerializeField]
+        private Quaternion _rotationWorld = new Quaternion();
+        [NonSerialized]
+        private Quaternion _outRotationWorld = new Quaternion();
+
         public override void ConstructNode()
         {
             DisplayName = "Motor";
 
-            AddSlot(new TriggerPortDescription(this, "Trigger", "Power", PortDirection.Input));
-            AddSlot(new FloatPortDescription(this, "Float", "Desired RPM", PortDirection.Input));
-            AddSlot(new TransformPortDescription(this, "Transform", "World", PortDirection.Input));            
-            AddSlot(new TransformPortDescription(this, "Transform", "World", PortDirection.Output));
+            AddVarSlot("Power", PortDirection.Input, _power);
+            AddVarSlot("Desired RPM", PortDirection.Input, _desiredRPM);
+            AddVarSlot("World Position", PortDirection.Input, _positionWorld);
+            AddVarSlot("World Rotation", PortDirection.Input, _rotationWorld);
+            AddVarSlot("World Rotation", PortDirection.Output, _outRotationWorld);
         }
     }
 

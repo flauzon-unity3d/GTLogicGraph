@@ -1,0 +1,22 @@
+{
+    "_serializedInputNodes": [],
+    "_serializedOutputNodes": [],
+    "_serializedNodes": [
+        {
+            "NodeType": "LightEmitterLogicNode",
+            "JSON": "{\"_displayName\":\"Light Emitter\",\"_position\":{\"x\":282.0,\"y\":-71.0,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"55ea53b2-c7c1-41f0-aec8-cc411514587f\",\"_serializedDetailNodes\":[],\"_serializedDetailEdges\":[],\"_WorldPosition\":{\"_data\":{\"x\":1.0,\"y\":2.0,\"z\":3.0}},\"_WorldRotation\":{\"_data\":{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":0.0}},\"_XChannels\":{\"_data\":5.0},\"_YChannels\":{\"_data\":6.0},\"_BatchMode\":{\"_data\":true},\"_Rate\":{\"_data\":7.0},\"_Ray\":{\"_data\":4.0}}"
+        },
+        {
+            "NodeType": "PhotoDetectorLogicNode",
+            "JSON": "{\"_displayName\":\"Photo Detector\",\"_position\":{\"x\":680.0,\"y\":-84.0,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"abac255d-739d-4ea2-8844-c6e8c96d2514\",\"_serializedDetailNodes\":[],\"_serializedDetailEdges\":[],\"_ray\":{\"_data\":8.0},\"_positionWorld\":{\"_data\":{\"x\":9.0,\"y\":10.0,\"z\":11.0}},\"_rotationWorld\":{\"_data\":{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":0.0}}}"
+        }
+    ],
+    "_serializedEdges": [
+        {
+            "SourceNodeGuid": "55ea53b2-c7c1-41f0-aec8-cc411514587f",
+            "SourceMemberName": "FieldFloat",
+            "TargetNodeGuid": "abac255d-739d-4ea2-8844-c6e8c96d2514",
+            "TargetMemberName": "FieldFloat"
+        }
+    ]
+}

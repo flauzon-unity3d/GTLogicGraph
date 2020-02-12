@@ -85,7 +85,10 @@ namespace GeoTetra.GTLogicGraph
 
         void Update()
         {
-            LogicGraphEditorView.HandleGraphChanges();
+            if (LogicGraphEditorView != null)
+            {
+                LogicGraphEditorView.HandleGraphChanges();
+            }
         }
 
         public void PingAsset()

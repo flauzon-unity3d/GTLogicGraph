@@ -9,16 +9,25 @@ namespace GeoTetra.GTLogicGraph
     public class DataConverterNodeEditor : NodeEditor
     {
         [SerializeField]
-        private float _value;
-       
+        private GameObject _ray; //*** Eventually Photon
+        [SerializeField]
+        private GameObject _intensity; //*** Eventually pixelArray
+        [SerializeField]
+        private Vector3 _positionWorld;
+        [SerializeField]
+        private Quaternion _rotationWorld;
+        [SerializeField]
+        private GameObject _converted; //*** Eventually data array
+
         public override void ConstructNode()
         {
             DisplayName = "Ray Converter";
-            
-            AddSlot(new PhotonPortDescription(this, "Photon", "Ray", PortDirection.Input));
-            AddSlot(new PixelArrayPortDescription(this, "PixelArray", "Intensity", PortDirection.Input));
-            AddSlot(new TransformPortDescription(this, "Transform", "World", PortDirection.Input));            
-            AddSlot(new DataArrayPortDescription(this, "DataArray", "Converted", PortDirection.Output));
+
+            AddVarSlot("Ray", PortDirection.Input, _ray);
+            AddVarSlot("Intensity", PortDirection.Input, _intensity);
+            AddVarSlot("World Position", PortDirection.Input, _positionWorld);
+            AddVarSlot("World Rotation", PortDirection.Input, _rotationWorld);
+            AddVarSlot("Converted", PortDirection.Output, _converted);
         }
     }
 

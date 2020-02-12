@@ -9,15 +9,19 @@ namespace GeoTetra.GTLogicGraph
     public class PowerSupplyNodeEditor : NodeEditor
     {
         [SerializeField]
-        private float _value;
-       
+        private float _voltage;
+        [SerializeField]
+        private float _current;
+        [NonSerialized]
+        private float _power;
+
         public override void ConstructNode()
         {
             DisplayName = "Power Supply";
-            
-            AddSlot(new FloatPortDescription(this, "float", "Voltage", PortDirection.Input));
-            AddSlot(new FloatPortDescription(this, "float", "Current", PortDirection.Input));
-            AddSlot(new TriggerPortDescription(this, "Trigger", "Power", PortDirection.Output));            
+
+            AddVarSlot("Voltage", PortDirection.Input, _voltage);
+            AddVarSlot("Current", PortDirection.Input, _current);
+            AddVarSlot("Power", PortDirection.Output, _power);
         }
     }
 

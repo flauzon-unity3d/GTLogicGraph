@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEditor.Experimental.GraphView;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace GeoTetra.GTLogicGraph
@@ -12,23 +13,26 @@ namespace GeoTetra.GTLogicGraph
             GraphLogicEditor.AddStyleSheetPath(this, "Styles/LogicPort");
         }
 
-        PortDescription _portDescription;
+        IPortDescription _portDescription;
 
-        public static Port Create(PortDescription portDescription, IEdgeConnectorListener connectorListener)
+        public static Port Create(IPortDescription portDescription, IEdgeConnectorListener connectorListener)
         {
             var port = new PortView(Orientation.Horizontal, 
-                portDescription.isInputSlot ? Direction.Input : Direction.Output,
-                portDescription.isInputSlot ? Capacity.Single : Capacity.Multi,
-                null)
+                portDescription.IsInputSlot ? Direction.Input : Direction.Output,
+                portDescription.IsInputSlot ? Capacity.Single : Capacity.Multi,
+                portDescription.ValueType)
             {
                 m_EdgeConnector = new EdgeConnector<Edge>(connectorListener),
             };
             port.AddManipulator(port.m_EdgeConnector);
+
+            portDescription.SpawnEditor(port);
+            
             port.PortDescription = portDescription;
             return port;
         }
 
-        public PortDescription PortDescription
+        public IPortDescription PortDescription
         {
             get { return _portDescription; }
             set
@@ -37,7 +41,7 @@ namespace GeoTetra.GTLogicGraph
                     return;
                 if (value == null)
                     throw new NullReferenceException();
-                if (_portDescription != null && value.isInputSlot != _portDescription.isInputSlot)
+                if (_portDescription != null && value.IsInputSlot != _portDescription.IsInputSlot)
                     throw new ArgumentException("Cannot change direction of already created port");
                 _portDescription = value;
                 portName = PortDescription.DisplayName;

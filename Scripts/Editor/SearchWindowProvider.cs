@@ -51,7 +51,7 @@ namespace GeoTetra.GTLogicGraph
         }
 
         List<int> m_Ids;
-        List<PortDescription> m_Slots = new List<PortDescription>();
+        List<IPortDescription> m_Slots = new List<IPortDescription>();
 
         public List<SearchTreeEntry> CreateSearchTree(SearchWindowContext context)
         {
@@ -178,10 +178,10 @@ namespace GeoTetra.GTLogicGraph
             var connectedSlot = ConnectedPortView.PortDescription;
             m_Slots.Clear();
             nodeEditor.GetSlots(m_Slots);
-            var hasSingleSlot = m_Slots.Count(s => s.isOutputSlot != connectedSlot.isOutputSlot) == 1;
+            var hasSingleSlot = m_Slots.Count(s => s.IsOutputSlot != connectedSlot.IsOutputSlot) == 1;
             m_Slots.RemoveAll(slot =>
             {
-                var materialSlot = (PortDescription)slot;
+                var materialSlot = (IPortDescription)slot;
                 return !materialSlot.IsCompatibleWith(connectedSlot);
             });
 

@@ -9,14 +9,16 @@ namespace GeoTetra.GTLogicGraph
     public class SendEventNodeEditor : NodeEditor
     {
         [SerializeField]
-        private float _value;
-       
+        private GameObject _trigger;
+        [NonSerialized]
+        private GameObject _receiver;
+
         public override void ConstructNode()
         {
             DisplayName = "Send Event";
 
-            AddSlot(new TriggerPortDescription(this, "Trigger", "Input", PortDirection.Input));
-            AddSlot(new GameObjectPortDescription(this, "GameObject", "Receiver", PortDirection.Output));            
+            AddVarSlot("Input", PortDirection.Input, _trigger);
+            AddVarSlot("Receiver", PortDirection.Output, _receiver);
         }
     }
 

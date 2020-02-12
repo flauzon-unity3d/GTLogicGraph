@@ -480,8 +480,8 @@ namespace GeoTetra.GTLogicGraph
 
         public void AddEdge(Edge edgeView)
         {
-            PortDescription leftPortDescription;
-            PortDescription rightPortDescription;
+            IPortDescription leftPortDescription;
+            IPortDescription rightPortDescription;
             GetSlots(edgeView, out leftPortDescription, out rightPortDescription);
 
             _logicGraphEditorObject.RegisterCompleteObjectUndo("Connect Edge");
@@ -498,6 +498,10 @@ namespace GeoTetra.GTLogicGraph
             edgeView.userData = serializedEdge;
             edgeView.output.Connect(edgeView);
             edgeView.input.Connect(edgeView);
+
+            leftPortDescription.HideEditor();
+            rightPortDescription.HideEditor();
+
             _graphView.AddElement(edgeView);
         }
 
@@ -528,7 +532,7 @@ namespace GeoTetra.GTLogicGraph
         }
 
 
-        private void GetSlots(Edge edge, out PortDescription leftPortDescription, out PortDescription rightPortDescription)
+        private void GetSlots(Edge edge, out IPortDescription leftPortDescription, out IPortDescription rightPortDescription)
         {
             leftPortDescription = (edge.output as PortView).PortDescription;
             rightPortDescription = (edge.input as PortView).PortDescription;

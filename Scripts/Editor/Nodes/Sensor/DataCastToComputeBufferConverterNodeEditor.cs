@@ -9,14 +9,16 @@ namespace GeoTetra.GTLogicGraph
     public class DataCastToComputeBufferNodeEditor : NodeEditor
     {
         [SerializeField]
-        private float _value;
+        private GameObject _dataArray; //*** Eventually use DataArray object
+        [NonSerialized]
+        private GameObject _computeBuffer;
        
         public override void ConstructNode()
         {
             DisplayName = "Data Cast To ComputeBuffer";
-            
-            AddSlot(new DataArrayPortDescription(this, "DataArray", "From", PortDirection.Input));
-            AddSlot(new ComputeBufferPortDescription(this, "ComputeBuffer", "To", PortDirection.Output));
+
+            AddVarSlot("From", PortDirection.Input, _dataArray);
+            AddVarSlot("To", PortDirection.Output, _computeBuffer);
         }
     }
 

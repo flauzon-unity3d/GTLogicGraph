@@ -8,32 +8,52 @@ namespace GeoTetra.GTLogicGraph
     [NodeEditorType(typeof(LightEmitterLogicNode))]
     public class LightEmitterNodeEditor : NodeEditor
     {
+        [SerializeField]
+        private FieldVector3 _WorldPosition;
+        [SerializeField]
+        private FieldQuaternion _WorldRotation;
         [SerializeField]        
-        private float _XChannels;
-
+        private FieldFloat _XChannels;
+        [SerializeField]
+        private FieldFloat _YChannels;
+        [SerializeField]
+        private FieldBool _BatchMode;
+        [SerializeField]
+        private FieldFloat _Rate;
+        [NonSerialized]
+        private FieldFloat _Ray;
 
         public override void ConstructNode()
         {
             DisplayName = "Light Emitter";
 
-            AddSlot(new TransformPortDescription(this, "Transform", "World", PortDirection.Input));
-            AddSlot(new FloatPortDescription(this, "Float", "X Channels", PortDirection.Input));
-            AddSlot(new FloatPortDescription(this, "Float", "Y Channels", PortDirection.Input));
-            AddSlot(new BooleanPortDescription(this, "Bool", "Batch Mode", PortDirection.Input));
-            AddSlot(new FloatPortDescription(this, "Float", "Rate", PortDirection.Input));
-            AddSlot(new PhotonPortDescription(this, "Photon", "Ray", PortDirection.Output));
+            _WorldPosition = new FieldVector3(this);
+            _WorldRotation = new FieldQuaternion(this);
+            _XChannels = new FieldFloat(this);
+            _YChannels = new FieldFloat(this);
+            _BatchMode = new FieldBool(this);
+            _Rate = new FieldFloat(this);
+            _Ray = new FieldFloat(this);
+
+            AddVarSlot("World Position", PortDirection.Input, _WorldPosition);
+            AddVarSlot("World Rotation", PortDirection.Input, _WorldRotation);
+            AddVarSlot("Batch Mode", PortDirection.Input, _BatchMode);
+            AddVarSlot("X Channels", PortDirection.Input, _XChannels);
+            AddVarSlot("Y Channels", PortDirection.Input, _YChannels);
+            AddVarSlot("Rate", PortDirection.Input, _Rate);
+            AddVarSlot("Ray", PortDirection.Output, _Ray);
         }
     }
 
     public class LightEmitterLogicNode : LogicNode
     {
-        [NodePort]
+        /*[NodePort]
         public event Action<float> Vector1Output;
 
         [Vector1Input]
         public void TestInput(float value)
         {
             if (Vector1Output != null) Vector1Output(value);
-        }
+        }*/
     }
 }

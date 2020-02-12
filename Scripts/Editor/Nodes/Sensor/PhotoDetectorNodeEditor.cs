@@ -8,24 +8,32 @@ namespace GeoTetra.GTLogicGraph
     [NodeEditorType(typeof(PhotoDetectorLogicNode))]
     public class PhotoDetectorNodeEditor : NodeEditor
     {
-        [Serializable]
-        public class Parameters
-        {
-            [SerializeField]
-            public float[] sensitivityCurveWavelength;
-        };
-
         [SerializeField]
-        private Parameters _params;
-       
+        private FieldFloat _ray;
+        [SerializeField]
+        private FieldVector3 _positionWorld;
+        [SerializeField]
+        private FieldQuaternion _rotationWorld;
+        [NonSerialized]
+        private FieldFloat _outRay;
+        [NonSerialized]
+        private FieldFloat _outIntensity;
+
         public override void ConstructNode()
         {
             DisplayName = "Photo Detector";
 
-            AddSlot(new PhotonPortDescription(this, "Photon", "Ray", PortDirection.Input));
-            AddSlot(new TransformPortDescription(this, "Transform", "World", PortDirection.Input));            
-            AddSlot(new PhotonPortDescription(this, "Photon", "Ray", PortDirection.Output));
-            AddSlot(new PixelArrayPortDescription(this, "PixelArray", "Intensity", PortDirection.Output));            
+            _ray = new FieldFloat(this);
+            _positionWorld = new FieldVector3(this);
+            _rotationWorld = new FieldQuaternion(this);
+            _outRay = new FieldFloat(this);
+            _outIntensity = new FieldFloat(this);
+
+            AddVarSlot("Ray", PortDirection.Input, _ray);
+            AddVarSlot("World Position", PortDirection.Input, _positionWorld);
+            AddVarSlot("World Rotation", PortDirection.Input, _rotationWorld);
+            AddVarSlot("Ray", PortDirection.Output, _outRay);
+            AddVarSlot("Intensity", PortDirection.Output, _outIntensity);
         }
     }
 

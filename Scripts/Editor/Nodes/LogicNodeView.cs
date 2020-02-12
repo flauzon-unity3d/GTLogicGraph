@@ -51,7 +51,7 @@ namespace GeoTetra.GTLogicGraph
             }
             contents.Add(controlsContainer);
 
-            List<PortDescription> foundSlots = new List<PortDescription>();
+            List<IPortDescription> foundSlots = new List<IPortDescription>();
             nodeEditor.GetSlots(foundSlots);
             AddSlots(foundSlots);
 
@@ -60,12 +60,12 @@ namespace GeoTetra.GTLogicGraph
             RefreshExpandedState();
         }
 
-        private void AddSlots(IEnumerable<PortDescription> slots)
+        private void AddSlots(IEnumerable<IPortDescription> slots)
         {
             foreach (var slot in slots)
             {
                 var port = PortView.Create(slot, _connectorListener);
-                if (slot.isOutputSlot)
+                if (slot.IsOutputSlot)
                     outputContainer.Add(port);
                 else
                     inputContainer.Add(port);
