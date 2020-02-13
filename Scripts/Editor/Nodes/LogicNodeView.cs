@@ -36,18 +36,6 @@ namespace GeoTetra.GTLogicGraph
                 controlsContainer.Add(_controlsDivider);
                 _controlItems = new VisualElement {name = "items"};
                 controlsContainer.Add(_controlItems);
-
-                foreach (var propertyInfo in
-                    nodeEditor.GetType().GetProperties(BindingFlags.Instance |
-                                                            BindingFlags.Public |
-                                                            BindingFlags.NonPublic))
-                {
-                    foreach (INodeControlAttribute attribute in
-                        propertyInfo.GetCustomAttributes(typeof(INodeControlAttribute), false))
-                    {
-                        _controlItems.Add(attribute.InstantiateControl(nodeEditor, propertyInfo));
-                    }
-                }
             }
             contents.Add(controlsContainer);
 

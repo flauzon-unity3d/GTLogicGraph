@@ -58,6 +58,143 @@ namespace GeoTetra.GTLogicGraph
             get { return _graphView; }
         }
 
+        class tPropertyParameter
+        {
+            public Blackboard Bb;
+            public string Name;
+            public string Type;
+
+            public tPropertyParameter(Blackboard _bb, string _name, string _type)
+            {
+                Bb = _bb;
+                Name = _name;
+                Type = _type;
+            }
+        }
+
+        void OnMainAddProperty(Blackboard bb)
+        {
+            GenericMenu menu = new GenericMenu();
+            
+            menu.AddItem(EditorGUIUtility.TrTextContent("FieldBool"), false, OnMainAddPropertyParameter, new tPropertyParameter(bb, "FieldBool", "FieldBool"));
+            menu.AddItem(EditorGUIUtility.TrTextContent("FieldFloat"), false, OnMainAddPropertyParameter, new tPropertyParameter(bb, "FieldFloat", "FieldFloat"));
+            menu.AddItem(EditorGUIUtility.TrTextContent("FieldVector2"), false, OnMainAddPropertyParameter, new tPropertyParameter(bb, "FieldVector2", "FieldVector2"));
+            menu.AddItem(EditorGUIUtility.TrTextContent("FieldVector3"), false, OnMainAddPropertyParameter, new tPropertyParameter(bb, "FieldVector3", "FieldVector3"));
+            menu.AddItem(EditorGUIUtility.TrTextContent("FieldVector4"), false, OnMainAddPropertyParameter, new tPropertyParameter(bb, "FieldVector4", "FieldVector4"));
+
+            //menu.AddItem(EditorGUIUtility.TrTextContent("Parameter"), false, OnMainAddPropertyCategory);
+            /*
+            if (!(controller.model.subgraph is VisualEffectSubgraphOperator))
+            {
+                menu.AddItem(EditorGUIUtility.TrTextContent("Category"), false, OnAddCategory);
+                menu.AddSeparator(string.Empty);
+            }
+
+            foreach (var parameter in VFXLibrary.GetParameters())
+            {
+                VFXParameter model = parameter.model as VFXParameter;
+
+                var type = model.type;
+                if (type == typeof(GPUEvent))
+                    continue;
+
+                menu.AddItem(EditorGUIUtility.TextContent(type.UserFriendlyName()), false, OnAddParameter, parameter);
+            }
+            */
+
+            menu.ShowAsContext();
+        }
+
+        void OnMainAddPropertyParameter(object parameter)
+        {
+            tPropertyParameter p = (tPropertyParameter)parameter;
+            p.Bb.Add(new BlackboardField(null, p.Name, p.Type));
+            /*var selectedCategory = m_View.selection.OfType<VFXBlackboardCategory>().FirstOrDefault();
+            VFXParameter newParam = m_Controller.AddVFXParameter(Vector2.zero, (VFXModelDescriptorParameters)parameter);
+            if (selectedCategory != null && newParam != null)
+                newParam.category = selectedCategory.title;*/
+        }
+
+
+        void OnMainAddPropertyCategory()
+        {
+            /*string newCategoryName = EditorGUIUtility.TrTextContent("new category").text;
+            int cpt = 1;
+            while (controller.graph.UIInfos.categories.Any(t => t.name == newCategoryName))
+            {
+                newCategoryName = string.Format(EditorGUIUtility.TrTextContent("new category {0}").text, cpt++);
+            }
+
+            controller.graph.UIInfos.categories.Add(new VFXUI.CategoryInfo() { name = newCategoryName });
+            controller.graph.Invalidate(VFXModel.InvalidationCause.kUIChanged);*/
+        }
+
+        void OnMainEditPropertyName(Blackboard bb, VisualElement element, string value)
+        {
+            if (element is BlackboardField)
+            {
+                (element as BlackboardField).name = value;
+            }
+        }
+
+        void OnPropertyDragUpdatedEvent(DragUpdatedEvent e)
+        {
+            Debug.Log("DROP");
+           /* var selection = DragAndDrop.GetGenericData("DragSelection") as List<ISelectable>;
+
+            if (selection == null)
+            {
+                SetDragIndicatorVisible(false);
+                return;
+            }
+
+            if (selection.Any(t => !(t is VFXBlackboardCategory)))
+            {
+                SetDragIndicatorVisible(false);
+                return;
+            }
+
+            Vector2 localPosition = e.localMousePosition;
+
+            m_InsertIndex = InsertionIndex(localPosition);
+
+            if (m_InsertIndex != -1)
+            {
+                float indicatorY = 0;
+
+                if (m_InsertIndex == childCount)
+                {
+                    if (childCount > 0)
+                    {
+                        VisualElement lastChild = this[childCount - 1];
+
+                        indicatorY = lastChild.ChangeCoordinatesTo(this, new Vector2(0, lastChild.layout.height + lastChild.resolvedStyle.marginBottom)).y;
+                    }
+                    else
+                    {
+                        indicatorY = this.contentRect.height;
+                    }
+                }
+                else
+                {
+                    VisualElement childAtInsertIndex = this[m_InsertIndex];
+
+                    indicatorY = childAtInsertIndex.ChangeCoordinatesTo(this, new Vector2(0, -childAtInsertIndex.resolvedStyle.marginTop)).y;
+                }
+
+                SetDragIndicatorVisible(true);
+
+                m_DragIndicator.style.top =  indicatorY - m_DragIndicator.resolvedStyle.height * 0.5f;
+
+                DragAndDrop.visualMode = DragAndDropVisualMode.Move;
+            }
+            else
+            {
+                SetDragIndicatorVisible(false);
+            }
+            e.StopPropagation();*/
+        }
+
         public LogicGraphEditorView(EditorWindow editorWindow, LogicGraphEditorObject logicGraphEditorObject)
         {
             _editorWindow = editorWindow;
@@ -130,6 +267,9 @@ namespace GeoTetra.GTLogicGraph
                 blackBoard.SetPosition(new Rect(4, 40, 300, 100));
                 blackBoard.title = "Properties";
                 blackBoard.subTitle = String.Empty;
+                blackBoard.addItemRequested = OnMainAddProperty;
+                blackBoard.editTextRequested = OnMainEditPropertyName;
+                blackBoard.RegisterCallback<DragUpdatedEvent>(OnPropertyDragUpdatedEvent);
                 _graphView.Add(blackBoard);
 
                 _graphView.StretchToParentSize();
@@ -349,6 +489,10 @@ namespace GeoTetra.GTLogicGraph
 
                 foreach (var edge in graphViewChange.elementsToRemove.OfType<Edge>())
                 {
+                    IPortDescription leftPortDescription;
+                    IPortDescription rightPortDescription;
+                    GetSlots(edge, out leftPortDescription, out rightPortDescription);
+                                        
                     if (!_logicGraphEditorObject.LogicGraphData.SerializedEdges.Remove(edge.userData as SerializedEdge))
                     {
                         // Not found in graphView, dig into graphView nodes and remove.
@@ -362,6 +506,12 @@ namespace GeoTetra.GTLogicGraph
                             }
                         }
                     }
+
+                    (edge.output as PortView).Disconnect(edge);
+                    (edge.input as PortView).Disconnect(edge);
+
+                    leftPortDescription.RefreshEditor();
+                    rightPortDescription.RefreshEditor();
                 }
             }
 
@@ -499,8 +649,8 @@ namespace GeoTetra.GTLogicGraph
             edgeView.output.Connect(edgeView);
             edgeView.input.Connect(edgeView);
 
-            leftPortDescription.HideEditor();
-            rightPortDescription.HideEditor();
+            leftPortDescription.RefreshEditor();
+            rightPortDescription.RefreshEditor();
 
             _graphView.AddElement(edgeView);
         }
@@ -525,13 +675,21 @@ namespace GeoTetra.GTLogicGraph
                     output = sourceAnchor,
                     input = targetAnchor
                 };
+
+                IPortDescription leftPortDescription;
+                IPortDescription rightPortDescription;
+                GetSlots(edgeView, out leftPortDescription, out rightPortDescription);
+
                 edgeView.output.Connect(edgeView);
                 edgeView.input.Connect(edgeView);
+
+                leftPortDescription.RefreshEditor();
+                rightPortDescription.RefreshEditor();
+
                 _graphView.AddElement(edgeView);
             }
         }
-
-
+        
         private void GetSlots(Edge edge, out IPortDescription leftPortDescription, out IPortDescription rightPortDescription)
         {
             leftPortDescription = (edge.output as PortView).PortDescription;
@@ -540,9 +698,9 @@ namespace GeoTetra.GTLogicGraph
         
         public void AddDetailEdge(Edge edgeView, NodeEditor contextNode)
         {
-            PortDetailDescription leftPortDescription;
-            PortDetailDescription rightPortDescription;
-            GetDetailSlots(edgeView, out leftPortDescription, out rightPortDescription);
+            IPortDescription leftPortDescription;
+            IPortDescription rightPortDescription;
+            GetSlots(edgeView, out leftPortDescription, out rightPortDescription);
 
             _logicGraphEditorObject.RegisterCompleteObjectUndo("Connect Edge");
             SerializedEdge serializedEdge = new SerializedEdge
@@ -560,12 +718,6 @@ namespace GeoTetra.GTLogicGraph
             _detailGraphView.AddElement(edgeView);
 
             contextNode.SetDirty();
-        }
-
-        private void GetDetailSlots(Edge edge, out PortDetailDescription leftPortDescription, out PortDetailDescription rightPortDescription)
-        {
-            leftPortDescription = (edge.output as PortDetailView).PortDescription;
-            rightPortDescription = (edge.input as PortDetailView).PortDescription;
         }
     }
 }

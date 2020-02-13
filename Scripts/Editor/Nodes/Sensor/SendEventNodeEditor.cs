@@ -1,5 +1,4 @@
-﻿using GeoTetra.GTLogicGraph.Slots;
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
@@ -9,13 +8,16 @@ namespace GeoTetra.GTLogicGraph
     public class SendEventNodeEditor : NodeEditor
     {
         [SerializeField]
-        private GameObject _trigger;
+        private FieldFloat _trigger;
         [NonSerialized]
-        private GameObject _receiver;
+        private FieldFloat _receiver;
 
         public override void ConstructNode()
         {
             DisplayName = "Send Event";
+
+            _trigger = new FieldFloat(this);
+            _receiver = new FieldFloat(this);
 
             AddVarSlot("Input", PortDirection.Input, _trigger);
             AddVarSlot("Receiver", PortDirection.Output, _receiver);

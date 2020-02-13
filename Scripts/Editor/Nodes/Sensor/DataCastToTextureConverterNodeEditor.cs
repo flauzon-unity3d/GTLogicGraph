@@ -1,5 +1,4 @@
-﻿using GeoTetra.GTLogicGraph.Slots;
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
@@ -9,13 +8,16 @@ namespace GeoTetra.GTLogicGraph
     public class DataCastToTextureNodeEditor : NodeEditor
     {        
         [SerializeField]
-        private float _dataArray;
+        private FieldFloat _dataArray;
         [NonSerialized]
-        private float _texture;
+        private FieldFloat _texture;
        
         public override void ConstructNode()
         {
             DisplayName = "Data Cast To Texture";
+
+            _dataArray = new FieldFloat(this);
+            _texture = new FieldFloat(this);
 
             AddVarSlot("From", PortDirection.Input, _dataArray);
             AddVarSlot("To", PortDirection.Output, _texture);

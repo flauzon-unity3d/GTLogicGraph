@@ -1,5 +1,4 @@
-﻿using GeoTetra.GTLogicGraph.Slots;
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
@@ -9,13 +8,16 @@ namespace GeoTetra.GTLogicGraph
     public class DataCastToComputeBufferNodeEditor : NodeEditor
     {
         [SerializeField]
-        private GameObject _dataArray; //*** Eventually use DataArray object
+        private FieldFloat _dataArray; //*** Eventually use DataArray object
         [NonSerialized]
-        private GameObject _computeBuffer;
+        private FieldFloat _computeBuffer;
        
         public override void ConstructNode()
         {
             DisplayName = "Data Cast To ComputeBuffer";
+
+            _dataArray = new FieldFloat(this);
+            _computeBuffer = new FieldFloat(this);
 
             AddVarSlot("From", PortDirection.Input, _dataArray);
             AddVarSlot("To", PortDirection.Output, _computeBuffer);

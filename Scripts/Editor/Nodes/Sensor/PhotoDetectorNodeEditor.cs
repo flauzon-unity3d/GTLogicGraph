@@ -1,5 +1,4 @@
-﻿using GeoTetra.GTLogicGraph.Slots;
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph

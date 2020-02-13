@@ -10,7 +10,7 @@ namespace GeoTetra.GTLogicGraph
     {
         private readonly LogicGraphEditorView _logicGraphEditorView;
         private readonly SearchDetailWindowProvider _searchWindowProvider;
-
+        
         public EdgeDetailConnectorListener(LogicGraphEditorView logicGraphEditorView, SearchDetailWindowProvider searchWindowProvider)
         {
             _logicGraphEditorView = logicGraphEditorView;
@@ -21,7 +21,7 @@ namespace GeoTetra.GTLogicGraph
         {
             var draggedPort = (edge.output != null ? edge.output.edgeConnector.edgeDragHelper.draggedPort : null) ??
                               (edge.input != null ? edge.input.edgeConnector.edgeDragHelper.draggedPort : null);
-            _searchWindowProvider.ConnectedPortView = (PortDetailView) draggedPort;
+            _searchWindowProvider.ConnectedPortView = (PortView) draggedPort;
             SearchWindow.Open(new SearchWindowContext(GUIUtility.GUIToScreenPoint(Event.current.mousePosition)),
                 _searchWindowProvider);
         }

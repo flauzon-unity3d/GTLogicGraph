@@ -27,13 +27,13 @@ namespace GeoTetra.GTLogicGraph
 		public override List<Port> GetCompatiblePorts(Port startAnchor, NodeAdapter nodeAdapter)
 		{
 			var compatibleAnchors = new List<Port>();
-			var startSlot = (startAnchor as PortDetailView).PortDescription;
+			var startSlot = (startAnchor as PortView).PortDescription;
 			if (startSlot == null)
 				return compatibleAnchors;
 
 			foreach (var candidateAnchor in ports.ToList())
 			{
-				var candidateSlot = (candidateAnchor as PortDetailView).PortDescription;
+				var candidateSlot = (candidateAnchor as PortView).PortDescription;
 				if (!startSlot.IsCompatibleWith(candidateSlot))
 					continue;
 

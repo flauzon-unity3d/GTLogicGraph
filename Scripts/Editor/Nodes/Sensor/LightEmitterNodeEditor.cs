@@ -1,5 +1,4 @@
-﻿using GeoTetra.GTLogicGraph.Slots;
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
@@ -46,14 +45,6 @@ namespace GeoTetra.GTLogicGraph
     }
 
     public class LightEmitterLogicNode : LogicNode
-    {
-        /*[NodePort]
-        public event Action<float> Vector1Output;
-
-        [Vector1Input]
-        public void TestInput(float value)
-        {
-            if (Vector1Output != null) Vector1Output(value);
-        }*/
+    {       
     }
 }

@@ -36,22 +36,10 @@ namespace GeoTetra.GTLogicGraph
                 controlsContainer.Add(_controlsDivider);
                 _controlItems = new VisualElement {name = "items"};
                 controlsContainer.Add(_controlItems);
-
-                foreach (var propertyInfo in
-                    nodeEditor.GetType().GetProperties(BindingFlags.Instance |
-                                                            BindingFlags.Public |
-                                                            BindingFlags.NonPublic))
-                {
-                    foreach (INodeDetailControlAttribute attribute in
-                        propertyInfo.GetCustomAttributes(typeof(INodeDetailControlAttribute), false))
-                    {
-                        _controlItems.Add(attribute.InstantiateControl(nodeEditor, propertyInfo));
-                    }
-                }
             }
             contents.Add(controlsContainer);
 
-            List<PortDetailDescription> foundSlots = new List<PortDetailDescription>();
+            List<IPortDescription> foundSlots = new List<IPortDescription>();
             nodeEditor.GetSlots(foundSlots);
             AddSlots(foundSlots);
 
@@ -59,13 +47,13 @@ namespace GeoTetra.GTLogicGraph
             base.expanded = nodeEditor.Expanded;
             RefreshExpandedState();
         }
-
-        private void AddSlots(IEnumerable<PortDetailDescription> slots)
+               
+        private void AddSlots(IEnumerable<IPortDescription> slots)
         {
             foreach (var slot in slots)
             {
-                var port = PortDetailView.Create(slot, _connectorListener);
-                if (slot.isOutputSlot)
+                var port = PortView.Create(slot, _connectorListener);
+                if (slot.IsOutputSlot)
                     outputContainer.Add(port);
                 else
                     inputContainer.Add(port);

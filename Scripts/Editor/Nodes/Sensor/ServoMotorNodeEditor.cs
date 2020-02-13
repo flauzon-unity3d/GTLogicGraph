@@ -1,5 +1,4 @@
-﻿using GeoTetra.GTLogicGraph.Slots;
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
@@ -9,19 +8,25 @@ namespace GeoTetra.GTLogicGraph
     public class ServoMotorNodeEditor : NodeEditor
     {
         [SerializeField]
-        private float _power;
+        private FieldFloat _power;
         [SerializeField]
-        private float _desiredAngle;
+        private FieldFloat _desiredAngle;
         [SerializeField]
-        private Vector3 _positionWorld;
+        private FieldVector3 _positionWorld;
         [SerializeField]
-        private Quaternion _rotationWorld;
+        private FieldQuaternion _rotationWorld;
         [NonSerialized]
-        private Quaternion _outRotationWorld;
+        private FieldQuaternion _outRotationWorld;
 
         public override void ConstructNode()
         {
             DisplayName = "Servo Motor";
+
+            _power = new FieldFloat(this);
+            _desiredAngle = new FieldFloat(this);
+            _positionWorld = new FieldVector3(this);
+            _rotationWorld = new FieldQuaternion(this);
+            _outRotationWorld = new FieldQuaternion(this);
 
             AddVarSlot("Power", PortDirection.Input, _power);
             AddVarSlot("Desired Angle", PortDirection.Input, _desiredAngle);

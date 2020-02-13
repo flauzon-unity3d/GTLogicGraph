@@ -1,5 +1,4 @@
-﻿using GeoTetra.GTLogicGraph.Slots;
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
@@ -8,74 +7,24 @@ namespace GeoTetra.GTLogicGraph
     [NodeDetailEditorType(typeof(PIDControllerLogicNodeDetail))]
     public class PIDControllerNodeDetailEditor : NodeDetailEditor
     {
-        [Serializable]
-        public class Parameters
-        {
-            [SerializeField]
-            public float[] sensitivityCurveWavelength;
-        };
-
         [SerializeField]
-        private Parameters _params;
-
+        private FieldFloat _in;
         [SerializeField]
-        private double _gainP;
-        [SerializeField]
-        private double _gainI;
-        [SerializeField]
-        private double _gainD;
-
-        [LabelDetailControl("Gain P")]
-        public LabelDetailData PValue
-        {
-            get { return new LabelDetailData(_gainP.ToString()); }
-            set
-            {
-                _gainP = Convert.ToDouble(value.data);
-                SetDirty();
-            }
-        }
-
-        [LabelDetailControl("Gain I")]
-        public LabelDetailData IValue
-        {
-            get { return new LabelDetailData(_gainI.ToString()); }
-            set
-            {
-                _gainI = Convert.ToDouble(value.data);
-                SetDirty();
-            }
-        }
-
-        [LabelDetailControl("Gain D")]
-        public LabelDetailData DValue
-        {
-            get { return new LabelDetailData(_gainD.ToString()); }
-            set
-            {
-                _gainD = Convert.ToDouble(value.data);
-                SetDirty();
-            }
-        }
+        private FieldFloat _out; 
 
         public override void ConstructNode()
         {
             DisplayName = "PID Controller";
 
-            AddSlot(new TriggerDetailPortDescription(this, "Trigger", "In", PortDetailDirection.Input));
-            AddSlot(new TriggerDetailPortDescription(this, "Trigger", "Out", PortDetailDirection.Output));
+            _in = new FieldFloat(this);
+            _out = new FieldFloat(this);
+
+            AddVarSlot("In", PortDirection.Input, _in);
+            AddVarSlot("Out", PortDirection.Output, _out);
         }
     }
 
     public class PIDControllerLogicNodeDetail : LogicNode
     {
-        [NodePort]
-        public event Action<float> Vector1Output;
-
-        [Vector1Input]
-        public void TestInput(float value)
-        {
-            if (Vector1Output != null) Vector1Output(value);
-        }
     }
 }

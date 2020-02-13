@@ -8,21 +8,14 @@ namespace GeoTetra.GTLogicGraph
     /// Describes how to draw a node, paired with GenericNodeview
     /// </summary>
     [Serializable]
-    public abstract class NodeDetailEditor
+    public abstract class NodeDetailEditor : INodeEditor
     {
-        [NonSerialized] private List<PortDetailDescription> _portDescriptions = new List<PortDetailDescription>();
-
-        [SerializeField] private string _displayName;
-        
+        [SerializeField] private string _displayName;        
         [SerializeField] private Vector3 _position;
-
         [SerializeField] private bool _expanded = true;
-
-        [SerializeField] private string _nodeGuid;
 
         public LogicGraphView Owner { get; set; }
         public LogicDetailGraphView DetailView { get; set; }
-        public SerializedNode SerializedNode { get; set; }
 
         public Vector3 Position
         {
@@ -36,10 +29,15 @@ namespace GeoTetra.GTLogicGraph
             set { _expanded = value; }
         }
 
-        public string NodeGuid
+        public override void SetDirty()
         {
-            get { return _nodeGuid; }
+            SerializedNode.JSON = JsonUtility.ToJson(this);
+            if (Owner != null && Owner.ContextNode != null && Owner.ContextNode is NodeEditor)
+            {
+                Owner.ContextNode.SetDirty();
+            }
         }
+
 
         public string DisplayName
         {
@@ -77,81 +75,6 @@ namespace GeoTetra.GTLogicGraph
                 Debug.LogWarning(this.GetType() + " requires a NodeType attribute");
                 return "";
             }
-        }
-
-        public void GetInputSlots<T>(List<T> foundSlots) where T : PortDetailDescription
-        {
-            foreach (var slot in _portDescriptions)
-            {
-                if (slot.isInputSlot && slot is T)
-                    foundSlots.Add((T) slot);
-            }
-        }
-
-        public void GetOutputSlots<T>(List<T> foundSlots) where T : PortDetailDescription
-        {
-            foreach (var slot in _portDescriptions)
-            {
-                if (slot.isOutputSlot && slot is T)
-                    foundSlots.Add((T) slot);
-            }
-        }
-
-        public void GetSlots<T>(List<T> foundSlots) where T : PortDetailDescription
-        {
-            foreach (var slot in _portDescriptions)
-            {
-                if (slot is T)
-                    foundSlots.Add((T) slot);
-            }
-        }
-
-        public void SetDirty()
-        {
-            SerializedNode.JSON = JsonUtility.ToJson(this);
-        }
-
-        public void AddSlot(PortDetailDescription portDescription)
-        {
-            if (!(portDescription is PortDetailDescription))
-                throw new ArgumentException(string.Format(
-                    "Trying to add slot {0} to Material node {1}, but it is not a {2}", portDescription, this,
-                    typeof(PortDetailDescription)));
-
-            _portDescriptions.Add(portDescription);
-        }
-
-        public T FindSlot<T>(string memberName) where T : PortDetailDescription
-        {
-            foreach (var slot in _portDescriptions)
-            {
-                if (slot.MemberName == memberName && slot is T)
-                    return (T) slot;
-            }
-
-            return default(T);
-        }
-
-        public T FindInputSlot<T>(string memberName) where T : PortDetailDescription
-        {
-            foreach (var slot in _portDescriptions)
-            {
-                if (slot.isInputSlot && slot.MemberName == memberName && slot is T)
-                    return (T) slot;
-            }
-
-            return default(T);
-        }
-
-        public T FindOutputSlot<T>(string memberName) where T : PortDetailDescription
-        {
-            foreach (var slot in _portDescriptions)
-            {
-                if (slot.isOutputSlot && slot.MemberName == memberName && slot is T)
-                    return (T) slot;
-            }
-
-            return default(T);
         }
     }
 }

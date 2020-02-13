@@ -11,12 +11,12 @@ namespace GeoTetra.GTLogicGraph
     public abstract class IPortDescription
     {
         public delegate bool tDelegateSpawnEditor(IPortDescription self, PortView port);
-        public delegate bool tDelegateHideEditor(IPortDescription self, PortView port);
+        public delegate bool tDelegateRefreshEditor(IPortDescription self, PortView port);
         
         public class tHandlerDescriptor
         {
             public tDelegateSpawnEditor spawnEditor;
-            public tDelegateHideEditor hideEditor;
+            public tDelegateRefreshEditor refreshEditor;
         }
     
         private readonly string _memberName;
@@ -66,9 +66,9 @@ namespace GeoTetra.GTLogicGraph
             get { return _type; }
         }
 
-        public NodeEditor Owner { get; private set; }
+        public INodeEditor Owner { get; private set; }
 
-        public IPortDescription(NodeEditor owner, Type type, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
+        public IPortDescription(INodeEditor owner, Type type, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
         {
             Owner = owner;
             _type = type;
@@ -96,7 +96,7 @@ namespace GeoTetra.GTLogicGraph
         }
 
         public abstract void SpawnEditor(PortView port);
-        public abstract void HideEditor();
+        public abstract void RefreshEditor();
     }
 
     [Serializable]
@@ -110,9 +110,22 @@ namespace GeoTetra.GTLogicGraph
         }
 
         // Promiscuous port can connect to anything
-        public PortDescription(NodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous=false):
+        public PortDescription(INodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous=false):
             base(owner, typeof(T), memberName, displayName, dataBind, portDirection, promiscuous)
         {            
+        }
+
+        public static VisualElement SpawnDefaultEditorPanel()
+        {
+            VisualElement panel = new VisualElement(); // Foldout();
+            panel.name = "Editor";
+            panel.style.flexDirection = FlexDirection.Column;
+            panel.style.flexGrow = 1;
+            panel.style.flexShrink = 1;
+            panel.style.marginLeft = Length.Percent(10.0f);
+            panel.style.marginRight = Length.Percent(10.0f);
+            //panel.Q("__toggle").style.visibility = Visibility.Hidden;
+            return panel;
         }
 
         public static void RegisterHandlers(Type t, tHandlerDescriptor f)
@@ -156,7 +169,7 @@ namespace GeoTetra.GTLogicGraph
             }
         }
 
-        public override void HideEditor()
+        public override void RefreshEditor()
         {
             tHandlerDescriptor f;
             if (_gMapFnc != null && _gMapFnc.TryGetValue(typeof(T), out f))
@@ -164,7 +177,7 @@ namespace GeoTetra.GTLogicGraph
                 if (DataBind is FieldType)
                 {
                     FieldType ft = (FieldType)DataBind;
-                    f.hideEditor.DynamicInvoke(this, ft.GetPortView());
+                    f.refreshEditor.DynamicInvoke(this, ft.GetPortView());
                 }
             }
         }
@@ -176,7 +189,7 @@ namespace GeoTetra.GTLogicGraph
     [UnityEditor.InitializeOnLoad]
     public class DataArrayPortDescription : PortDescription<float>
     {
-        public DataArrayPortDescription(NodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
+        public DataArrayPortDescription(INodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
             : base(owner, memberName, displayName, dataBind, portDirection, promiscuous)
         {
         }
@@ -187,7 +200,7 @@ namespace GeoTetra.GTLogicGraph
     [UnityEditor.InitializeOnLoad]
     public class PhotonPortDescription : PortDescription<float>
     {
-        public PhotonPortDescription(NodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
+        public PhotonPortDescription(INodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
             : base(owner, memberName, displayName, dataBind, portDirection, promiscuous)
         {
         }
@@ -198,7 +211,7 @@ namespace GeoTetra.GTLogicGraph
     [UnityEditor.InitializeOnLoad]
     public class PixelArrayPortDescription : PortDescription<float>
     {
-        public PixelArrayPortDescription(NodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
+        public PixelArrayPortDescription(INodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
             : base(owner, memberName, displayName, dataBind, portDirection, promiscuous)
         {
         }
@@ -208,7 +221,7 @@ namespace GeoTetra.GTLogicGraph
     [UnityEditor.InitializeOnLoad]
     public class TexturePortDescription : PortDescription<Texture>
     {
-        public TexturePortDescription(NodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
+        public TexturePortDescription(INodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
             : base(owner, memberName, displayName, dataBind, portDirection, promiscuous)
         {
         }
@@ -218,7 +231,7 @@ namespace GeoTetra.GTLogicGraph
     [UnityEditor.InitializeOnLoad]
     public class ComputeBufferPortDescription : PortDescription<ComputeBuffer>
     {
-        public ComputeBufferPortDescription(NodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
+        public ComputeBufferPortDescription(INodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
             : base(owner, memberName, displayName, dataBind, portDirection, promiscuous)
         {
         }
@@ -231,7 +244,7 @@ namespace GeoTetra.GTLogicGraph
         static BoolPortDescription()
         {
             tHandlerDescriptor desc = new tHandlerDescriptor();
-            desc.hideEditor = HandleHideEditor;
+            desc.refreshEditor = HandleRefreshEditor;
             desc.spawnEditor = HandleSpawnEditor;
             PortDescription<FieldBool>.RegisterHandlers(typeof(FieldBool), desc);
         }
@@ -245,9 +258,12 @@ namespace GeoTetra.GTLogicGraph
         {
             if (self.PortDirection == PortDirection.Input)
             {
+                VisualElement panel = SpawnDefaultEditorPanel();
                 Toggle t = new Toggle();
                 t.userData = self.DataBind;
-                port.Add(t);
+
+                panel.Add(t);
+                port.Add(panel);
 
                 FieldBool b = (FieldBool)self.DataBind;
                 t.RegisterValueChangedCallback<bool>(b.OnValueChanged);
@@ -256,13 +272,14 @@ namespace GeoTetra.GTLogicGraph
             return true;
         }
 
-        public static bool HandleHideEditor(IPortDescription self, PortView port)
+        public static bool HandleRefreshEditor(IPortDescription self, PortView port)
         {
             foreach (VisualElement v in port.Children())
             {
                 if (v is Toggle)
                 {
-                    v.SetEnabled(false);
+                    v.SetEnabled(!port.connected);
+                    v.visible = !port.connected;
                 }
             }
             return true;
@@ -276,13 +293,13 @@ namespace GeoTetra.GTLogicGraph
         static FloatPortDescription()
         {
             tHandlerDescriptor desc = new tHandlerDescriptor();
-            desc.hideEditor = HandleHideEditor;
+            desc.refreshEditor = HandleRefreshEditor;
             desc.spawnEditor = HandleSpawnEditor;
 
             PortDescription<FieldFloat>.RegisterHandlers(typeof(FieldFloat), desc);
         }
 
-        public FloatPortDescription(NodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
+        public FloatPortDescription(INodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
             : base(owner, memberName, displayName, dataBind, portDirection, promiscuous)
         {
         }
@@ -292,12 +309,18 @@ namespace GeoTetra.GTLogicGraph
             if (self.PortDirection == PortDirection.Input)
             {
                 TextField[] fields = new TextField[1];
+                VisualElement panel = SpawnDefaultEditorPanel();
                 for (int a = 0; a < fields.Length; ++a)
                 {
                     fields[a] = new TextField();
                     fields[a].userData = self.DataBind;
-                    port.Add(fields[a]);
+                    fields[a].style.minWidth = 24;
+                    fields[a].style.minHeight = 8;
+                    fields[a].style.maxHeight = 18;
+                    fields[a].style.flexGrow = 1;
+                    panel.Add(fields[a]);
                 }
+                port.Add(panel);
 
                 FieldFloat f = (FieldFloat)self.DataBind;
                 fields[0].RegisterValueChangedCallback<string>(f.OnValueChanged);
@@ -306,13 +329,14 @@ namespace GeoTetra.GTLogicGraph
             return true;
         }
 
-        public static bool HandleHideEditor(IPortDescription self, PortView port)
+        public static bool HandleRefreshEditor(IPortDescription self, PortView port)
         {
             foreach (VisualElement v in port.Children())
             {
-                if (v is TextField)
+                if ((v is TextField) || (v.name == "Editor"))
                 {
-                    v.SetEnabled(false);
+                    v.SetEnabled(!port.connected);
+                    v.visible = !port.connected;
                 }
             }
             return true;
@@ -326,13 +350,13 @@ namespace GeoTetra.GTLogicGraph
         static Vector2PortDescription()
         {
             tHandlerDescriptor desc = new tHandlerDescriptor();
-            desc.hideEditor = HandleHideEditor;
+            desc.refreshEditor = HandleRefreshEditor;
             desc.spawnEditor = HandleSpawnEditor;
 
             PortDescription<Vector2>.RegisterHandlers(typeof(Vector2), desc);
         }
 
-        public Vector2PortDescription(NodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
+        public Vector2PortDescription(INodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
             : base(owner, memberName, displayName, dataBind, portDirection, promiscuous)
         {
         }
@@ -342,12 +366,17 @@ namespace GeoTetra.GTLogicGraph
             if (self.PortDirection == PortDirection.Input)
             {
                 TextField[] fields = new TextField[2];
+                VisualElement panel = SpawnDefaultEditorPanel();
                 for (int a = 0; a < fields.Length; ++a)
                 {
                     fields[a] = new TextField();
                     fields[a].userData = self.DataBind;
-                    port.Add(fields[a]);
+                    fields[a].style.minHeight = 8;
+                    fields[a].style.maxHeight = 18;
+                    fields[a].style.flexGrow = 1;
+                    panel.Add(fields[a]);
                 }
+                port.Add(panel);                
 
                 FieldVector2 v2 = (FieldVector2)self.DataBind;
                 fields[0].RegisterValueChangedCallback<string>(v2.OnValueChangedX);
@@ -359,13 +388,14 @@ namespace GeoTetra.GTLogicGraph
             return true;
         }
 
-        public static bool HandleHideEditor(IPortDescription self, PortView port)
+        public static bool HandleRefreshEditor(IPortDescription self, PortView port)
         {
             foreach (VisualElement v in port.Children())
             {
-                if (v is TextField)
+                if ((v is TextField) || (v.name == "Editor"))
                 {
-                    v.SetEnabled(false);
+                    v.SetEnabled(!port.connected);
+                    v.visible = !port.connected;
                 }
             }
             return true;
@@ -379,13 +409,13 @@ namespace GeoTetra.GTLogicGraph
         static FieldVector3PortDescription()
         {
             tHandlerDescriptor desc = new tHandlerDescriptor();
-            desc.hideEditor = HandleHideEditor;
+            desc.refreshEditor = HandleRefreshEditor;
             desc.spawnEditor = HandleSpawnEditor;
 
             PortDescription<FieldVector3>.RegisterHandlers(typeof(FieldVector3), desc);
         }
 
-        public FieldVector3PortDescription(NodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
+        public FieldVector3PortDescription(INodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
             : base(owner, memberName, displayName, dataBind, portDirection, promiscuous)
         {
         }
@@ -394,13 +424,18 @@ namespace GeoTetra.GTLogicGraph
         {
             if (self.PortDirection == PortDirection.Input)
             {
-                TextField[] fields = new TextField[3];
+                TextField[] fields = new TextField[3];                
+                VisualElement panel = SpawnDefaultEditorPanel();
                 for (int a = 0; a < fields.Length; ++a)
                 {
                     fields[a] = new TextField();
                     fields[a].userData = self.DataBind;
-                    port.Add(fields[a]);
+                    fields[a].style.minHeight = 8;
+                    fields[a].style.maxHeight = 18;
+                    fields[a].style.flexGrow = 1;
+                    panel.Add(fields[a]);
                 }
+                port.Add(panel);
 
                 FieldVector3 v3 = (FieldVector3)self.DataBind;
                 fields[0].RegisterValueChangedCallback<string>(v3.OnValueChangedX);
@@ -414,13 +449,75 @@ namespace GeoTetra.GTLogicGraph
             return true;
         }
 
-        public static bool HandleHideEditor(IPortDescription self, PortView port)
+        public static bool HandleRefreshEditor(IPortDescription self, PortView port)
         {
             foreach (VisualElement v in port.Children())
             {
-                if (v is TextField)
+                if ((v is TextField) || (v.name == "Editor"))
                 {
-                    v.SetEnabled(false);
+                    v.SetEnabled(!port.connected);
+                    v.visible = !port.connected;
+                }
+            }
+            return true;
+        }
+    }
+
+    [Serializable]
+    [UnityEditor.InitializeOnLoad]
+    public class FieldQuaternionPortDescription : PortDescription<FieldQuaternion>
+    {
+        static FieldQuaternionPortDescription()
+        {
+            tHandlerDescriptor desc = new tHandlerDescriptor();
+            desc.refreshEditor = HandleRefreshEditor;
+            desc.spawnEditor = HandleSpawnEditor;
+
+            PortDescription<FieldQuaternion>.RegisterHandlers(typeof(FieldQuaternion), desc);
+        }
+
+        public FieldQuaternionPortDescription(INodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
+            : base(owner, memberName, displayName, dataBind, portDirection, promiscuous)
+        {
+        }
+
+        public static bool HandleSpawnEditor(IPortDescription self, PortView port)
+        {
+            if (self.PortDirection == PortDirection.Input)
+            {
+                TextField[] fields = new TextField[3];
+                VisualElement panel = SpawnDefaultEditorPanel();
+                for (int a = 0; a < fields.Length; ++a)
+                {
+                    fields[a] = new TextField();
+                    fields[a].userData = self.DataBind;
+                    fields[a].style.minHeight = 8;
+                    fields[a].style.maxHeight = 18;
+                    fields[a].style.flexGrow = 1;
+                    panel.Add(fields[a]);
+                }
+                port.Add(panel);
+
+                FieldQuaternion v3 = (FieldQuaternion)self.DataBind;
+                fields[0].RegisterValueChangedCallback<string>(v3.OnValueChangedX);
+                fields[1].RegisterValueChangedCallback<string>(v3.OnValueChangedY);
+                fields[2].RegisterValueChangedCallback<string>(v3.OnValueChangedZ);
+
+                fields[0].value = Convert.ToString(v3.Data.eulerAngles.x);
+                fields[1].value = Convert.ToString(v3.Data.eulerAngles.y);
+                fields[2].value = Convert.ToString(v3.Data.eulerAngles.z);
+            }
+            return true;
+        }
+
+        public static bool HandleRefreshEditor(IPortDescription self, PortView port)
+        {            
+            foreach (VisualElement v in port.Children())
+            {
+                if ((v is TextField) || (v.name == "Editor"))
+                {
+                    v.SetEnabled(!port.connected);
+                    v.visible = !port.connected;
                 }
             }
             return true;
@@ -434,13 +531,13 @@ namespace GeoTetra.GTLogicGraph
         static FieldVector4PortDescription()
         {
             tHandlerDescriptor desc = new tHandlerDescriptor();
-            desc.hideEditor = HandleHideEditor;
+            desc.refreshEditor = HandleRefreshEditor;
             desc.spawnEditor = HandleSpawnEditor;
 
             PortDescription<FieldVector4>.RegisterHandlers(typeof(FieldVector4), desc);
         }
 
-        public FieldVector4PortDescription(NodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
+        public FieldVector4PortDescription(INodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
             : base(owner, memberName, displayName, dataBind, portDirection, promiscuous)
         {                        
         }
@@ -450,12 +547,17 @@ namespace GeoTetra.GTLogicGraph
             if (self.PortDirection == PortDirection.Input)
             {
                 TextField[] fields = new TextField[4];
+                VisualElement panel = SpawnDefaultEditorPanel();
                 for (int a = 0; a < fields.Length; ++a)
                 {
                     fields[a] = new TextField();
                     fields[a].userData = self.DataBind;
-                    port.Add(fields[a]);
+                    fields[a].style.minHeight = 8;
+                    fields[a].style.maxHeight = 18;
+                    fields[a].style.flexGrow = 1;                    
+                    panel.Add(fields[a]);
                 }
+                port.Add(panel);
 
                 FieldVector4 v4 = (FieldVector4)self.DataBind;
                 fields[0].RegisterValueChangedCallback<string>(v4.OnValueChangedX);
@@ -471,13 +573,14 @@ namespace GeoTetra.GTLogicGraph
             return true;
         }
 
-        public static bool HandleHideEditor(IPortDescription self, PortView port)
+        public static bool HandleRefreshEditor(IPortDescription self, PortView port)
         {
             foreach (VisualElement v in port.Children())
             {
-                if (v is TextField)
+                if ((v is TextField) || (v.name == "Editor"))
                 {
-                    v.SetEnabled(false);
+                    v.SetEnabled(!port.connected);
+                    v.visible = !port.connected;
                 }
             }
             return true;
@@ -489,7 +592,7 @@ namespace GeoTetra.GTLogicGraph
     [UnityEditor.InitializeOnLoad]
     public class GameObjectPortDescription : PortDescription<GameObject>
     {
-        public GameObjectPortDescription(NodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
+        public GameObjectPortDescription(INodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
             : base(owner, memberName, displayName, dataBind, portDirection, promiscuous)
         {
         }

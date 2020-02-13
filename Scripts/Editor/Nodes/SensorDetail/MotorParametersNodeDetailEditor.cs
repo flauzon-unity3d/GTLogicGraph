@@ -1,5 +1,4 @@
-﻿using GeoTetra.GTLogicGraph.Slots;
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
@@ -8,36 +7,20 @@ namespace GeoTetra.GTLogicGraph
     [NodeDetailEditorType(typeof(MotorParametersLogicNodeDetail))]
     public class MotorParametersNodeDetailEditor : NodeDetailEditor
     {
-        [Serializable]
-        public class Parameters
-        {
-            [SerializeField]
-            public float[] sensitivityCurveWavelength;
-        };
-
         [SerializeField]
-        private Parameters _params;
-
+        private FieldFloat _in;
         [SerializeField]
-        private double _kM;
-
-        [LabelDetailControl("kM")]
-        public LabelDetailData PValue
-        {
-            get { return new LabelDetailData(_kM.ToString()); }
-            set
-            {
-                _kM = Convert.ToDouble(value.data);
-                SetDirty();
-            }
-        }
+        private FieldFloat _out;  
 
         public override void ConstructNode()
         {
             DisplayName = "Motor Parameters";
 
-            AddSlot(new TriggerDetailPortDescription(this, "Trigger", "In", PortDetailDirection.Input));
-            AddSlot(new TriggerDetailPortDescription(this, "Trigger", "Out", PortDetailDirection.Output));
+            _in = new FieldFloat(this);
+            _out = new FieldFloat(this);
+
+            AddVarSlot("In", PortDirection.Input, _in);
+            AddVarSlot("Out", PortDirection.Output, _out);
         }
     }
 

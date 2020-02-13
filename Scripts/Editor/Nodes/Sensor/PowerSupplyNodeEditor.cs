@@ -1,5 +1,4 @@
-﻿using GeoTetra.GTLogicGraph.Slots;
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
@@ -9,15 +8,19 @@ namespace GeoTetra.GTLogicGraph
     public class PowerSupplyNodeEditor : NodeEditor
     {
         [SerializeField]
-        private float _voltage;
+        private FieldFloat _voltage;
         [SerializeField]
-        private float _current;
+        private FieldFloat _current;
         [NonSerialized]
-        private float _power;
+        private FieldFloat _power;
 
         public override void ConstructNode()
         {
             DisplayName = "Power Supply";
+
+            _voltage = new FieldFloat(this);
+            _current = new FieldFloat(this);
+            _power = new FieldFloat(this);
 
             AddVarSlot("Voltage", PortDirection.Input, _voltage);
             AddVarSlot("Current", PortDirection.Input, _current);

@@ -17,10 +17,10 @@ namespace GeoTetra.GTLogicGraph
         private LogicGraphEditorView _logicGraphEditorView;
         private LogicGraphView _contextGraphView;
         private LogicDetailGraphView _graphView;
-        private Texture2D m_Icon;
-        public PortDetailView ConnectedPortView { get; set; }
+        private Texture2D m_Icon;        
         public bool nodeNeedsRepositioning { get; set; }
         public Vector2 targetPosition { get; private set; }
+        public PortView ConnectedPortView { get; set; }
 
         public void Initialize(EditorWindow editorWindow, 
             LogicGraphEditorView logicGraphEditorView,
@@ -55,7 +55,7 @@ namespace GeoTetra.GTLogicGraph
         }
 
         List<int> m_Ids;
-        List<PortDetailDescription> m_Slots = new List<PortDetailDescription>();
+        List<IPortDescription> m_Slots = new List<IPortDescription>();
 
         public List<SearchTreeEntry> CreateSearchTree(SearchWindowContext context)
         {
@@ -182,10 +182,10 @@ namespace GeoTetra.GTLogicGraph
             var connectedSlot = ConnectedPortView.PortDescription;
             m_Slots.Clear();
             nodeEditor.GetSlots(m_Slots);
-            var hasSingleSlot = m_Slots.Count(s => s.isOutputSlot != connectedSlot.isOutputSlot) == 1;
+            var hasSingleSlot = m_Slots.Count(s => s.IsOutputSlot != connectedSlot.IsOutputSlot) == 1;
             m_Slots.RemoveAll(slot =>
             {
-                var materialSlot = (PortDetailDescription)slot;
+                var materialSlot = (IPortDescription)slot;
                 return !materialSlot.IsCompatibleWith(connectedSlot);
             });
 

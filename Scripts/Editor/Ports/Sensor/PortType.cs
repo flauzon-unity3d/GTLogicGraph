@@ -10,16 +10,16 @@ namespace GeoTetra.GTLogicGraph
     [Serializable]
     public abstract class FieldType
     {
-        private NodeEditor _editor;
+        private INodeEditor _editor;
         private PortView _portView;
 
-        public NodeEditor Editor
+        public INodeEditor Editor
         { 
             get { return _editor; }
             set { _editor = value; }
         }
 
-        public FieldType(NodeEditor editor)
+        public FieldType(INodeEditor editor)
         {
             _editor = editor;
             _portView = null;
@@ -71,31 +71,25 @@ namespace GeoTetra.GTLogicGraph
             get { return _data; }
         }
 
-        public FieldQuaternion(NodeEditor editor) : base(editor)
+        public FieldQuaternion(INodeEditor editor) : base(editor)
         {
         }
 
         public void OnValueChangedX(ChangeEvent<string> e)
         {
-            _data.x = Convert.ToSingle(e.newValue);
+            _data.eulerAngles = new Vector3(Convert.ToSingle(e.newValue), _data.eulerAngles.y, _data.eulerAngles.z);
             Editor.SetDirty();
         }
 
         public void OnValueChangedY(ChangeEvent<string> e)
         {
-            _data.y = Convert.ToSingle(e.newValue);
+            _data.eulerAngles = new Vector3(_data.eulerAngles.x, Convert.ToSingle(e.newValue), _data.eulerAngles.z);
             Editor.SetDirty();
         }
 
         public void OnValueChangedZ(ChangeEvent<string> e)
         {
-            _data.z = Convert.ToSingle(e.newValue);
-            Editor.SetDirty();
-        }
-
-        public void OnValueChangedW(ChangeEvent<string> e)
-        {
-            _data.w = Convert.ToSingle(e.newValue);
+            _data.eulerAngles = new Vector3(_data.eulerAngles.x, _data.eulerAngles.y, Convert.ToSingle(e.newValue));
             Editor.SetDirty();
         }
     }
@@ -111,7 +105,7 @@ namespace GeoTetra.GTLogicGraph
             get { return _data; }
         }
 
-        public FieldFloat(NodeEditor editor) : base(editor)
+        public FieldFloat(INodeEditor editor) : base(editor)
         {
         }
 
@@ -133,7 +127,7 @@ namespace GeoTetra.GTLogicGraph
             get { return _data; }
         }
 
-        public FieldVector2(NodeEditor editor) : base(editor)
+        public FieldVector2(INodeEditor editor) : base(editor)
         {
         }
 
@@ -161,7 +155,7 @@ namespace GeoTetra.GTLogicGraph
             get { return _data; }
         }
 
-        public FieldVector3(NodeEditor editor) : base(editor)
+        public FieldVector3(INodeEditor editor) : base(editor)
         {
         }
 
@@ -195,7 +189,7 @@ namespace GeoTetra.GTLogicGraph
             get { return _data; }
         }
 
-        public FieldVector4(NodeEditor editor) : base(editor)
+        public FieldVector4(INodeEditor editor) : base(editor)
         {
         }
 

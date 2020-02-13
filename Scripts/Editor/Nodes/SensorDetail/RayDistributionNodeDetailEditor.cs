@@ -1,5 +1,4 @@
-﻿using GeoTetra.GTLogicGraph.Slots;
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
@@ -8,22 +7,20 @@ namespace GeoTetra.GTLogicGraph
     [NodeDetailEditorType(typeof(RayDistributionLogicNodeDetail))]
     public class RayDistributionNodeDetailEditor : NodeDetailEditor
     {
-        [Serializable]
-        public class Parameters
-        {
-            [SerializeField]
-            public float[] sensitivityCurveWavelength;
-        };
-
         [SerializeField]
-        private Parameters _params;
+        private FieldFloat _in;
+        [SerializeField]
+        private FieldFloat _out;  
        
         public override void ConstructNode()
         {
             DisplayName = "Ray Distribution";
 
-            AddSlot(new TriggerDetailPortDescription(this, "Trigger", "Out", PortDetailDirection.Output));
-            AddSlot(new TriggerDetailPortDescription(this, "Trigger", "Mode", PortDetailDirection.Input));
+            _in = new FieldFloat(this);
+            _out = new FieldFloat(this);
+
+            AddVarSlot("In", PortDirection.Input, _in);
+            AddVarSlot("Out", PortDirection.Output, _out);
         }
     }
 

@@ -1,5 +1,4 @@
-﻿using GeoTetra.GTLogicGraph.Slots;
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
@@ -9,19 +8,25 @@ namespace GeoTetra.GTLogicGraph
     public class DataConverterNodeEditor : NodeEditor
     {
         [SerializeField]
-        private GameObject _ray; //*** Eventually Photon
+        private FieldFloat _ray; //*** Eventually Photon
         [SerializeField]
-        private GameObject _intensity; //*** Eventually pixelArray
+        private FieldFloat _intensity; //*** Eventually pixelArray
         [SerializeField]
-        private Vector3 _positionWorld;
+        private FieldVector3 _positionWorld;
         [SerializeField]
-        private Quaternion _rotationWorld;
+        private FieldQuaternion _rotationWorld;
         [SerializeField]
-        private GameObject _converted; //*** Eventually data array
+        private FieldFloat _converted; //*** Eventually data array
 
         public override void ConstructNode()
         {
             DisplayName = "Ray Converter";
+
+            _ray = new FieldFloat(this);
+            _intensity = new FieldFloat(this);
+            _positionWorld = new FieldVector3(this);
+            _rotationWorld = new FieldQuaternion(this);
+            _converted = new FieldFloat(this);
 
             AddVarSlot("Ray", PortDirection.Input, _ray);
             AddVarSlot("Intensity", PortDirection.Input, _intensity);
