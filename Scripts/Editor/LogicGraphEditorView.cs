@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
@@ -62,25 +64,52 @@ namespace GeoTetra.GTLogicGraph
         {
             public Blackboard Bb;
             public string Name;
-            public string Type;
+            public Type Type;
+            public string BoundObject;
 
-            public tPropertyParameter(Blackboard _bb, string _name, string _type)
+            public tPropertyParameter(Blackboard _bb, string _name, Type _type, string _boundObject)
             {
                 Bb = _bb;
                 Name = _name;
                 Type = _type;
+                BoundObject = _boundObject;
+            }
+        }
+
+        public static IEnumerable<Type> GetTypesOrNothing(Assembly assembly)
+        {
+            try
+            {
+                return assembly.GetTypes();
+            }
+            catch
+            {
+                return Enumerable.Empty<Type>();
             }
         }
 
         void OnMainAddProperty(Blackboard bb)
         {
             GenericMenu menu = new GenericMenu();
-            
-            menu.AddItem(EditorGUIUtility.TrTextContent("FieldBool"), false, OnMainAddPropertyParameter, new tPropertyParameter(bb, "FieldBool", "FieldBool"));
-            menu.AddItem(EditorGUIUtility.TrTextContent("FieldFloat"), false, OnMainAddPropertyParameter, new tPropertyParameter(bb, "FieldFloat", "FieldFloat"));
-            menu.AddItem(EditorGUIUtility.TrTextContent("FieldVector2"), false, OnMainAddPropertyParameter, new tPropertyParameter(bb, "FieldVector2", "FieldVector2"));
-            menu.AddItem(EditorGUIUtility.TrTextContent("FieldVector3"), false, OnMainAddPropertyParameter, new tPropertyParameter(bb, "FieldVector3", "FieldVector3"));
-            menu.AddItem(EditorGUIUtility.TrTextContent("FieldVector4"), false, OnMainAddPropertyParameter, new tPropertyParameter(bb, "FieldVector4", "FieldVector4"));
+
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (var type in GetTypesOrNothing(assembly))
+                {
+                    if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(NodeEditor)))
+                    {
+                        var attrs = type.GetCustomAttributes(typeof(TitleAttribute), false) as TitleAttribute[];
+                        if (attrs != null && attrs.Length > 0)
+                        {
+                            if (attrs[0].title[0] == "Type")
+                            {
+                                //*** Resolve boundobject name
+                                menu.AddItem(EditorGUIUtility.TrTextContent(attrs[0].title[1]), false, OnMainAddPropertyParameter, new tPropertyParameter(bb, attrs[0].title[1], type, "testbound"));
+                            }
+                        }
+                    }
+                }
+            }
 
             //menu.AddItem(EditorGUIUtility.TrTextContent("Parameter"), false, OnMainAddPropertyCategory);
             /*
@@ -108,25 +137,14 @@ namespace GeoTetra.GTLogicGraph
         void OnMainAddPropertyParameter(object parameter)
         {
             tPropertyParameter p = (tPropertyParameter)parameter;
-            p.Bb.Add(new BlackboardField(null, p.Name, p.Type));
-            /*var selectedCategory = m_View.selection.OfType<VFXBlackboardCategory>().FirstOrDefault();
-            VFXParameter newParam = m_Controller.AddVFXParameter(Vector2.zero, (VFXModelDescriptorParameters)parameter);
-            if (selectedCategory != null && newParam != null)
-                newParam.category = selectedCategory.title;*/
+            BlackboardField field = new BlackboardField(null, p.Name, p.Type.Name);
+            field.userData = p;
+            p.Bb.Add(field);
         }
 
 
         void OnMainAddPropertyCategory()
         {
-            /*string newCategoryName = EditorGUIUtility.TrTextContent("new category").text;
-            int cpt = 1;
-            while (controller.graph.UIInfos.categories.Any(t => t.name == newCategoryName))
-            {
-                newCategoryName = string.Format(EditorGUIUtility.TrTextContent("new category {0}").text, cpt++);
-            }
-
-            controller.graph.UIInfos.categories.Add(new VFXUI.CategoryInfo() { name = newCategoryName });
-            controller.graph.Invalidate(VFXModel.InvalidationCause.kUIChanged);*/
         }
 
         void OnMainEditPropertyName(Blackboard bb, VisualElement element, string value)
@@ -134,66 +152,20 @@ namespace GeoTetra.GTLogicGraph
             if (element is BlackboardField)
             {
                 (element as BlackboardField).name = value;
+                (element as BlackboardField).text = value;
             }
         }
 
-        void OnPropertyDragUpdatedEvent(DragUpdatedEvent e)
+        private void OnPropertyDragUpdatedEvent(DragUpdatedEvent e)
         {
-            Debug.Log("DROP");
-           /* var selection = DragAndDrop.GetGenericData("DragSelection") as List<ISelectable>;
-
-            if (selection == null)
-            {
-                SetDragIndicatorVisible(false);
-                return;
-            }
-
-            if (selection.Any(t => !(t is VFXBlackboardCategory)))
-            {
-                SetDragIndicatorVisible(false);
-                return;
-            }
-
-            Vector2 localPosition = e.localMousePosition;
-
-            m_InsertIndex = InsertionIndex(localPosition);
-
-            if (m_InsertIndex != -1)
-            {
-                float indicatorY = 0;
-
-                if (m_InsertIndex == childCount)
-                {
-                    if (childCount > 0)
-                    {
-                        VisualElement lastChild = this[childCount - 1];
-
-                        indicatorY = lastChild.ChangeCoordinatesTo(this, new Vector2(0, lastChild.layout.height + lastChild.resolvedStyle.marginBottom)).y;
-                    }
-                    else
-                    {
-                        indicatorY = this.contentRect.height;
-                    }
-                }
-                else
-                {
-                    VisualElement childAtInsertIndex = this[m_InsertIndex];
-
-                    indicatorY = childAtInsertIndex.ChangeCoordinatesTo(this, new Vector2(0, -childAtInsertIndex.resolvedStyle.marginTop)).y;
-                }
-
-                SetDragIndicatorVisible(true);
-
-                m_DragIndicator.style.top =  indicatorY - m_DragIndicator.resolvedStyle.height * 0.5f;
-
-                DragAndDrop.visualMode = DragAndDropVisualMode.Move;
-            }
-            else
-            {
-                SetDragIndicatorVisible(false);
-            }
-            e.StopPropagation();*/
+            e.StopPropagation();
         }
+
+        private void OnPropertyDragPerformEvent(DragPerformEvent e)
+        {
+        }
+
+
 
         public LogicGraphEditorView(EditorWindow editorWindow, LogicGraphEditorObject logicGraphEditorObject)
         {
@@ -270,9 +242,13 @@ namespace GeoTetra.GTLogicGraph
                 blackBoard.addItemRequested = OnMainAddProperty;
                 blackBoard.editTextRequested = OnMainEditPropertyName;
                 blackBoard.RegisterCallback<DragUpdatedEvent>(OnPropertyDragUpdatedEvent);
+                blackBoard.RegisterCallback<DragPerformEvent>(OnPropertyDragPerformEvent);
                 _graphView.Add(blackBoard);
 
                 _graphView.StretchToParentSize();
+                mainGraph.RegisterCallback<DragEnterEvent>(OnMainGraphDragEntryEvent);
+                mainGraph.RegisterCallback<DragPerformEvent>(OnMainGraphDragPerformEvent);
+                mainGraph.RegisterCallback<DragUpdatedEvent>(OnMainGraphDragUpdatedEvent);
                 mainGraph.Add(_graphView);
             }
 
@@ -383,6 +359,49 @@ namespace GeoTetra.GTLogicGraph
             
             clientView.StretchToParentSize();
             _editorWindow.rootVisualElement.Add(clientView);            
+        }
+
+        private void OnMainGraphDragUpdatedEvent(DragUpdatedEvent evt)
+        {
+            DragAndDrop.visualMode = DragAndDropVisualMode.Link;
+            DragAndDrop.AcceptDrag();
+            evt.StopPropagation();
+        }
+
+        private void OnMainGraphDragPerformEvent(DragPerformEvent evt)
+        {
+            List<ISelectable> obj = DragAndDrop.GetGenericData("DragSelection") as List<ISelectable>;            
+            if (obj != null && obj.Count > 0)
+            {
+                BlackboardField field = (BlackboardField)obj[0];
+                tPropertyParameter param = field.userData as tPropertyParameter;
+                if (param != null)
+                {
+                    var inst = Activator.CreateInstance(param.Type);
+                    if (inst is NodeEditor)
+                    {
+                        NodeEditor node = inst as NodeEditor;
+
+                        // Check in Param what is bound to that node, and set to nodeeditor.
+                        var windowMousePosition = evt.mousePosition;
+                        var graphMousePosition = _graphView.contentViewContainer.WorldToLocal(windowMousePosition);
+                        node.Position = new Vector3(graphMousePosition.x, graphMousePosition.y, 0);
+
+                        AddNode(node);
+
+                        node.BoundObject = param.BoundObject;
+                    }
+                }
+            }
+
+            DragAndDrop.AcceptDrag();
+            evt.StopPropagation();
+        }
+
+        private void OnMainGraphDragEntryEvent(DragEnterEvent evt)
+        {
+            DragAndDrop.AcceptDrag();
+            evt.StopPropagation();
         }
 
         private void LoadElements()

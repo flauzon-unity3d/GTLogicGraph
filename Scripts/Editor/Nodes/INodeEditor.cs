@@ -17,6 +17,25 @@ namespace GeoTetra.GTLogicGraph
         protected List<IPortDescription> _portDescriptions = new List<IPortDescription>();
         [SerializeField] 
         protected string _nodeGuid;
+        [SerializeField]
+        private string _boundObject;
+
+        public string BoundObject
+        {
+            get { return _boundObject; }
+            set 
+            { 
+                _boundObject = value;
+                foreach (var slot in _portDescriptions)
+                {
+                    if (slot.IsInputSlot)
+                    {
+                        slot.RefreshEditor(!String.IsNullOrEmpty(_boundObject));
+                    }
+                }
+            }
+        }
+
 
         public string NodeGuid
         {
@@ -59,6 +78,12 @@ namespace GeoTetra.GTLogicGraph
 
         public void AddVarSlot<T>(string name, PortDirection portDirection, T refData)
         {
+            // Input Port with a boundobject is not added to the node (Node comes from a scene bound object)
+            if (!String.IsNullOrEmpty(BoundObject) && portDirection == PortDirection.Input)
+            {
+                return;
+            }
+
             if (refData == null)
             {                
                 Debug.LogError("[AddVarSlot] refData is null.");

@@ -11,7 +11,7 @@ namespace GeoTetra.GTLogicGraph
     public abstract class IPortDescription
     {
         public delegate bool tDelegateSpawnEditor(IPortDescription self, PortView port);
-        public delegate bool tDelegateRefreshEditor(IPortDescription self, PortView port);
+        public delegate bool tDelegateRefreshEditor(IPortDescription self, PortView port, bool forceHide);
         
         public class tHandlerDescriptor
         {
@@ -96,7 +96,7 @@ namespace GeoTetra.GTLogicGraph
         }
 
         public abstract void SpawnEditor(PortView port);
-        public abstract void RefreshEditor();
+        public abstract void RefreshEditor(bool forceHide = false);
     }
 
     [Serializable]
@@ -169,7 +169,7 @@ namespace GeoTetra.GTLogicGraph
             }
         }
 
-        public override void RefreshEditor()
+        public override void RefreshEditor(bool forceHide = false)
         {
             tHandlerDescriptor f;
             if (_gMapFnc != null && _gMapFnc.TryGetValue(typeof(T), out f))
@@ -177,7 +177,7 @@ namespace GeoTetra.GTLogicGraph
                 if (DataBind is FieldType)
                 {
                     FieldType ft = (FieldType)DataBind;
-                    f.refreshEditor.DynamicInvoke(this, ft.GetPortView());
+                    f.refreshEditor.DynamicInvoke(this, ft.GetPortView(), forceHide);
                 }
             }
         }
@@ -272,14 +272,21 @@ namespace GeoTetra.GTLogicGraph
             return true;
         }
 
-        public static bool HandleRefreshEditor(IPortDescription self, PortView port)
+        public static bool HandleRefreshEditor(IPortDescription self, PortView port, bool forceHide)
         {
+            if (port == null)
+            {
+                return false;
+            }
+            
+            port.SetEnabled(!forceHide);
+
             foreach (VisualElement v in port.Children())
             {
-                if (v is Toggle)
-                {
-                    v.SetEnabled(!port.connected);
-                    v.visible = !port.connected;
+                if ((v is TextField) || (v.name == "Editor"))
+                {                    
+                    v.SetEnabled(!port.connected && !forceHide);
+                    v.visible = !port.connected && !forceHide;
                 }
             }
             return true;
@@ -329,14 +336,20 @@ namespace GeoTetra.GTLogicGraph
             return true;
         }
 
-        public static bool HandleRefreshEditor(IPortDescription self, PortView port)
+        public static bool HandleRefreshEditor(IPortDescription self, PortView port, bool forceHide)
         {
+            if (port == null)
+            {
+                return false;
+            }
+            port.SetEnabled(!forceHide);
+
             foreach (VisualElement v in port.Children())
             {
                 if ((v is TextField) || (v.name == "Editor"))
                 {
-                    v.SetEnabled(!port.connected);
-                    v.visible = !port.connected;
+                    v.SetEnabled(!port.connected && !forceHide);
+                    v.visible = !port.connected && !forceHide;
                 }
             }
             return true;
@@ -353,7 +366,7 @@ namespace GeoTetra.GTLogicGraph
             desc.refreshEditor = HandleRefreshEditor;
             desc.spawnEditor = HandleSpawnEditor;
 
-            PortDescription<Vector2>.RegisterHandlers(typeof(Vector2), desc);
+            PortDescription<FieldVector2>.RegisterHandlers(typeof(FieldVector2), desc);
         }
 
         public Vector2PortDescription(INodeEditor owner, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
@@ -388,14 +401,20 @@ namespace GeoTetra.GTLogicGraph
             return true;
         }
 
-        public static bool HandleRefreshEditor(IPortDescription self, PortView port)
+        public static bool HandleRefreshEditor(IPortDescription self, PortView port, bool forceHide)
         {
+            if (port == null)
+            {
+                return false;
+            }
+            port.SetEnabled(!forceHide);
+
             foreach (VisualElement v in port.Children())
             {
                 if ((v is TextField) || (v.name == "Editor"))
                 {
-                    v.SetEnabled(!port.connected);
-                    v.visible = !port.connected;
+                    v.SetEnabled(!port.connected && !forceHide);
+                    v.visible = !port.connected && !forceHide;
                 }
             }
             return true;
@@ -449,14 +468,20 @@ namespace GeoTetra.GTLogicGraph
             return true;
         }
 
-        public static bool HandleRefreshEditor(IPortDescription self, PortView port)
+        public static bool HandleRefreshEditor(IPortDescription self, PortView port, bool forceHide)
         {
+            if (port == null)
+            {
+                return false;
+            }
+            port.SetEnabled(!forceHide);
+
             foreach (VisualElement v in port.Children())
             {
                 if ((v is TextField) || (v.name == "Editor"))
                 {
-                    v.SetEnabled(!port.connected);
-                    v.visible = !port.connected;
+                    v.SetEnabled(!port.connected && !forceHide);
+                    v.visible = !port.connected && !forceHide;
                 }
             }
             return true;
@@ -510,14 +535,20 @@ namespace GeoTetra.GTLogicGraph
             return true;
         }
 
-        public static bool HandleRefreshEditor(IPortDescription self, PortView port)
-        {            
+        public static bool HandleRefreshEditor(IPortDescription self, PortView port, bool forceHide)
+        {
+            if (port == null)
+            {
+                return false;
+            }
+            port.SetEnabled(!forceHide);
+
             foreach (VisualElement v in port.Children())
             {
                 if ((v is TextField) || (v.name == "Editor"))
                 {
-                    v.SetEnabled(!port.connected);
-                    v.visible = !port.connected;
+                    v.SetEnabled(!port.connected && !forceHide);
+                    v.visible = !port.connected && !forceHide;
                 }
             }
             return true;
@@ -573,14 +604,20 @@ namespace GeoTetra.GTLogicGraph
             return true;
         }
 
-        public static bool HandleRefreshEditor(IPortDescription self, PortView port)
+        public static bool HandleRefreshEditor(IPortDescription self, PortView port, bool forceHide)
         {
+            if (port == null)
+            {
+                return false;
+            }
+            port.SetEnabled(!forceHide);
+
             foreach (VisualElement v in port.Children())
             {
                 if ((v is TextField) || (v.name == "Editor"))
                 {
-                    v.SetEnabled(!port.connected);
-                    v.visible = !port.connected;
+                    v.SetEnabled(!port.connected && !forceHide);
+                    v.visible = !port.connected && !forceHide;
                 }
             }
             return true;

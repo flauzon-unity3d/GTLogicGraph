@@ -22,8 +22,7 @@ namespace GeoTetra.GTLogicGraph
 
         [SerializeField]
         private List<SerializedEdge> _serializedDetailEdges = new List<SerializedEdge>();
-
-
+      
         public LogicGraphView Owner { get; set; }
         public LogicDetailGraphView DetailView { get; set; }
 
@@ -36,7 +35,6 @@ namespace GeoTetra.GTLogicGraph
         {
             get { return _serializedDetailNodes; }
         }
-
 
         public Vector3 Position
         {

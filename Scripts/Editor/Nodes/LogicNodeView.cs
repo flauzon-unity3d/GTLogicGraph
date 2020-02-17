@@ -96,7 +96,7 @@ namespace GeoTetra.GTLogicGraph
             var bb = new Blackboard(NodeEditor.DetailView);
             bb.title = NodeEditor.DisplayName;
             bb.subTitle = string.Empty;
-            bb.SetPosition(new Rect(4, 24, 300, 200));            
+            bb.SetPosition(new Rect(4, 24, 300, 200));
             NodeEditor.DetailView.Add(bb);
 
             // Deserialize context node

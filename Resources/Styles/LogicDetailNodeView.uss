@@ -1,3 +1,8 @@
+LogicDetailNodeView {
+  min-width: 100;
+  width: auto;
+}
+
 .unity-button {
     margin-top:3px;
     margin-bottom:3px;

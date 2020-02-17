@@ -39,8 +39,6 @@ namespace GeoTetra.GTLogicGraph
     [Serializable]
     public class FieldBool : FieldType
     {
-        
-
         [SerializeField]
         private bool _data;
         public bool Data
