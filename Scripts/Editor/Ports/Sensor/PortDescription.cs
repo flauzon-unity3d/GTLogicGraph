@@ -18,13 +18,19 @@ namespace GeoTetra.GTLogicGraph
             public tDelegateSpawnEditor spawnEditor;
             public tDelegateRefreshEditor refreshEditor;
         }
-    
+
+        private readonly string _guid;
         private readonly string _memberName;
         private readonly string _displayName = "";
         private readonly PortDirection _portDirection;
         private readonly bool _promiscuous;
         private readonly Type _type;
         private readonly object _dataBind;
+
+        public string Guid
+        {
+            get { return _guid; }
+        }
 
         public bool Promiscuous
         {
@@ -71,6 +77,7 @@ namespace GeoTetra.GTLogicGraph
         public IPortDescription(INodeEditor owner, Type type, string memberName, string displayName, object dataBind, PortDirection portDirection, bool promiscuous = false)
         {
             Owner = owner;
+            _guid = displayName;
             _type = type;
             _memberName = memberName;
             _displayName = displayName;
@@ -117,14 +124,23 @@ namespace GeoTetra.GTLogicGraph
 
         public static VisualElement SpawnDefaultEditorPanel()
         {
-            VisualElement panel = new VisualElement(); // Foldout();
+            VisualElement panel = new Foldout();
             panel.name = "Editor";
             panel.style.flexDirection = FlexDirection.Column;
             panel.style.flexGrow = 1;
             panel.style.flexShrink = 1;
             panel.style.marginLeft = Length.Percent(10.0f);
             panel.style.marginRight = Length.Percent(10.0f);
-            //panel.Q("__toggle").style.visibility = Visibility.Hidden;
+            panel.Q("unity-checkmark").style.visibility = Visibility.Hidden;
+            panel.Q("unity-checkmark").style.width = 0;
+            panel.Q("unity-checkmark").style.height = 0;
+            panel.Q("unity-checkmark").style.maxWidth = 0;
+            panel.Q("unity-checkmark").style.maxHeight = 0;
+            panel.Q("unity-checkmark").style.marginTop = 0;            
+            panel.Q("unity-checkmark").style.marginBottom = 0;
+            panel.Q(null, "unity-toggle").style.marginTop = 0;            
+            panel.Q(null, "unity-toggle").style.marginBottom = 0;
+
             return panel;
         }
 
@@ -175,8 +191,13 @@ namespace GeoTetra.GTLogicGraph
             if (_gMapFnc != null && _gMapFnc.TryGetValue(typeof(T), out f))
             {
                 if (DataBind is FieldType)
-                {
+                {                    
                     FieldType ft = (FieldType)DataBind;
+                    // Find NodeEditor to resolve BoundObject
+                    if (IsInputSlot && ft.GetPortView() != null && (ft.GetPortView().userData as INodeEditor) != null)
+                    {
+                        forceHide |= !String.IsNullOrEmpty((ft.GetPortView().userData as INodeEditor).BoundObject);
+                    }
                     f.refreshEditor.DynamicInvoke(this, ft.GetPortView(), forceHide);
                 }
             }
@@ -283,12 +304,13 @@ namespace GeoTetra.GTLogicGraph
 
             foreach (VisualElement v in port.Children())
             {
-                if ((v is TextField) || (v.name == "Editor"))
-                {                    
-                    v.SetEnabled(!port.connected && !forceHide);
-                    v.visible = !port.connected && !forceHide;
+                if ((v.name == "Editor") && (v is Foldout))
+                {
+                    Foldout fo = v as Foldout;
+                    fo.value = (!port.connected && !forceHide);
                 }
             }
+
             return true;
         }
     }
@@ -346,10 +368,10 @@ namespace GeoTetra.GTLogicGraph
 
             foreach (VisualElement v in port.Children())
             {
-                if ((v is TextField) || (v.name == "Editor"))
+                if ((v.name == "Editor") && (v is Foldout))
                 {
-                    v.SetEnabled(!port.connected && !forceHide);
-                    v.visible = !port.connected && !forceHide;
+                    Foldout fo = v as Foldout;
+                    fo.value = (!port.connected && !forceHide);
                 }
             }
             return true;
@@ -378,16 +400,29 @@ namespace GeoTetra.GTLogicGraph
         {
             if (self.PortDirection == PortDirection.Input)
             {
+                string[] kName = new string[] { "X", "Y" };
                 TextField[] fields = new TextField[2];
                 VisualElement panel = SpawnDefaultEditorPanel();
                 for (int a = 0; a < fields.Length; ++a)
                 {
+                    VisualElement container = new VisualElement();
+                    container.style.flexDirection = FlexDirection.Row;
+                    container.style.flexGrow = 1;
+                    container.style.flexShrink = 1;
+
+                    Label l = new Label();
+                    l.text = kName[a];
+                    l.style.alignSelf = Align.Center;
+                    container.Add(l);
+
                     fields[a] = new TextField();
                     fields[a].userData = self.DataBind;
                     fields[a].style.minHeight = 8;
                     fields[a].style.maxHeight = 18;
-                    fields[a].style.flexGrow = 1;
-                    panel.Add(fields[a]);
+                    fields[a].style.flexGrow = 1;                    
+                    container.Add(fields[a]);
+
+                    panel.Add(container);
                 }
                 port.Add(panel);                
 
@@ -411,10 +446,10 @@ namespace GeoTetra.GTLogicGraph
 
             foreach (VisualElement v in port.Children())
             {
-                if ((v is TextField) || (v.name == "Editor"))
+                if ((v.name == "Editor") && (v is Foldout))
                 {
-                    v.SetEnabled(!port.connected && !forceHide);
-                    v.visible = !port.connected && !forceHide;
+                    Foldout fo = v as Foldout;
+                    fo.value = (!port.connected && !forceHide);
                 }
             }
             return true;
@@ -443,16 +478,29 @@ namespace GeoTetra.GTLogicGraph
         {
             if (self.PortDirection == PortDirection.Input)
             {
+                string[] kName = new string[] { "X", "Y", "Z" };
                 TextField[] fields = new TextField[3];                
                 VisualElement panel = SpawnDefaultEditorPanel();
                 for (int a = 0; a < fields.Length; ++a)
                 {
+                    VisualElement container = new VisualElement();
+                    container.style.flexDirection = FlexDirection.Row;
+                    container.style.flexGrow = 1;
+                    container.style.flexShrink = 1;
+
+                    Label l = new Label();
+                    l.text = kName[a];
+                    l.style.alignSelf = Align.Center;
+                    container.Add(l);
+
                     fields[a] = new TextField();
                     fields[a].userData = self.DataBind;
                     fields[a].style.minHeight = 8;
                     fields[a].style.maxHeight = 18;
-                    fields[a].style.flexGrow = 1;
-                    panel.Add(fields[a]);
+                    fields[a].style.flexGrow = 1;                    
+                    container.Add(fields[a]);
+
+                    panel.Add(container);
                 }
                 port.Add(panel);
 
@@ -475,13 +523,13 @@ namespace GeoTetra.GTLogicGraph
                 return false;
             }
             port.SetEnabled(!forceHide);
-
+                        
             foreach (VisualElement v in port.Children())
             {
-                if ((v is TextField) || (v.name == "Editor"))
+                if ((v.name == "Editor") && (v is Foldout))
                 {
-                    v.SetEnabled(!port.connected && !forceHide);
-                    v.visible = !port.connected && !forceHide;
+                    Foldout fo = v as Foldout;
+                    fo.value = (!port.connected && !forceHide);
                 }
             }
             return true;
@@ -510,16 +558,29 @@ namespace GeoTetra.GTLogicGraph
         {
             if (self.PortDirection == PortDirection.Input)
             {
+                string[] kName = new string[] { "X", "Y", "Z" };
                 TextField[] fields = new TextField[3];
                 VisualElement panel = SpawnDefaultEditorPanel();
                 for (int a = 0; a < fields.Length; ++a)
                 {
+                    VisualElement container = new VisualElement();
+                    container.style.flexDirection = FlexDirection.Row;
+                    container.style.flexGrow = 1;
+                    container.style.flexShrink = 1;
+
+                    Label l = new Label();
+                    l.text = kName[a];
+                    l.style.alignSelf = Align.Center;
+                    container.Add(l);
+
                     fields[a] = new TextField();
                     fields[a].userData = self.DataBind;
                     fields[a].style.minHeight = 8;
                     fields[a].style.maxHeight = 18;
-                    fields[a].style.flexGrow = 1;
-                    panel.Add(fields[a]);
+                    fields[a].style.flexGrow = 1;                    
+                    container.Add(fields[a]);
+
+                    panel.Add(container);
                 }
                 port.Add(panel);
 
@@ -545,10 +606,10 @@ namespace GeoTetra.GTLogicGraph
 
             foreach (VisualElement v in port.Children())
             {
-                if ((v is TextField) || (v.name == "Editor"))
+                if ((v.name == "Editor") && (v is Foldout))
                 {
-                    v.SetEnabled(!port.connected && !forceHide);
-                    v.visible = !port.connected && !forceHide;
+                    Foldout fo = v as Foldout;
+                    fo.value = (!port.connected && !forceHide);
                 }
             }
             return true;
@@ -577,16 +638,29 @@ namespace GeoTetra.GTLogicGraph
         {
             if (self.PortDirection == PortDirection.Input)
             {
+                string[] kName = new string[] { "X", "Y", "Z", "W" };
                 TextField[] fields = new TextField[4];
                 VisualElement panel = SpawnDefaultEditorPanel();
                 for (int a = 0; a < fields.Length; ++a)
                 {
+                    VisualElement container = new VisualElement();
+                    container.style.flexDirection = FlexDirection.Row;
+                    container.style.flexGrow = 1;
+                    container.style.flexShrink = 1;
+
+                    Label l = new Label();
+                    l.text = kName[a];
+                    l.style.alignSelf = Align.Center;
+                    container.Add(l);
+
                     fields[a] = new TextField();
                     fields[a].userData = self.DataBind;
                     fields[a].style.minHeight = 8;
                     fields[a].style.maxHeight = 18;
                     fields[a].style.flexGrow = 1;                    
-                    panel.Add(fields[a]);
+                    container.Add(fields[a]);
+
+                    panel.Add(container);
                 }
                 port.Add(panel);
 
@@ -614,10 +688,10 @@ namespace GeoTetra.GTLogicGraph
 
             foreach (VisualElement v in port.Children())
             {
-                if ((v is TextField) || (v.name == "Editor"))
+                if ((v.name == "Editor") && (v is Foldout))
                 {
-                    v.SetEnabled(!port.connected && !forceHide);
-                    v.visible = !port.connected && !forceHide;
+                    Foldout fo = v as Foldout;
+                    fo.value = (!port.connected && !forceHide);
                 }
             }
             return true;

@@ -65,10 +65,20 @@ namespace GeoTetra.GTLogicGraph
                        
         public string NodeType()
         {
-            var attrs = GetType().GetCustomAttributes(typeof(NodeDetailEditorType), false) as NodeDetailEditorType[];
+            var attrs = GetType().GetCustomAttributes(typeof(TitleAttribute), false) as TitleAttribute[];
             if (attrs != null && attrs.Length > 0)
             {
-                return attrs[0].NodeType.Name;
+                string val = "";
+                for (int a = 0; a < attrs[0].title.Length; ++a)
+                {
+                    val += attrs[0].title[a];
+                    if (a < attrs[0].title.Length - 1)
+                    {
+                        val += "/";
+                    }
+                }
+
+                return val;
             }
             else
             {

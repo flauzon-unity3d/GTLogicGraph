@@ -4,7 +4,6 @@ using UnityEngine;
 namespace GeoTetra.GTLogicGraph
 {
     [Title("Actuator", "Motor Parameters")]
-    [NodeDetailEditorType(typeof(MotorParametersLogicNodeDetail))]
     public class MotorParametersNodeDetailEditor : NodeDetailEditor
     {
         [SerializeField]
@@ -21,18 +20,6 @@ namespace GeoTetra.GTLogicGraph
 
             AddVarSlot("In", PortDirection.Input, _in);
             AddVarSlot("Out", PortDirection.Output, _out);
-        }
-    }
-
-    public class MotorParametersLogicNodeDetail : LogicNode
-    {
-        [NodePort]
-        public event Action<float> Vector1Output;
-
-        [Vector1Input]
-        public void TestInput(float value)
-        {
-            if (Vector1Output != null) Vector1Output(value);
         }
     }
 }

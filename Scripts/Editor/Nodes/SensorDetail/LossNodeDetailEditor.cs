@@ -4,7 +4,6 @@ using UnityEngine;
 namespace GeoTetra.GTLogicGraph
 {
     [Title("Signal", "Loss")]
-    [NodeDetailEditorType(typeof(LossLogicNodeDetail))]
     public class LossNodeDetailEditor : NodeDetailEditor
     {
         [SerializeField]
@@ -21,18 +20,6 @@ namespace GeoTetra.GTLogicGraph
 
             AddVarSlot("In", PortDirection.Input, _in);
             AddVarSlot("Out", PortDirection.Output, _out);
-        }
-    }
-
-    public class LossLogicNodeDetail : LogicNode
-    {
-        [NodePort]
-        public event Action<float> Vector1Output;
-
-        [Vector1Input]
-        public void TestInput(float value)
-        {
-            if (Vector1Output != null) Vector1Output(value);
         }
     }
 }

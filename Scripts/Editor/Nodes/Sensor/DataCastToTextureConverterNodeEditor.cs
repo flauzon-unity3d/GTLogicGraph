@@ -4,7 +4,6 @@ using UnityEngine;
 namespace GeoTetra.GTLogicGraph
 {
     [Title("Data", "Data Cast To Texture")]
-    [NodeEditorType(typeof(DataCastToTextureLogicNode))]
     public class DataCastToTextureNodeEditor : NodeEditor
     {        
         [SerializeField]
@@ -21,18 +20,6 @@ namespace GeoTetra.GTLogicGraph
 
             AddVarSlot("From", PortDirection.Input, _dataArray);
             AddVarSlot("To", PortDirection.Output, _texture);
-        }
-    }
-
-    public class DataCastToTextureLogicNode : LogicNode
-    {
-        [NodePort]
-        public event Action<float> Vector1Output;
-
-        [Vector1Input]
-        public void TestInput(float value)
-        {
-            if (Vector1Output != null) Vector1Output(value);
         }
     }
 }

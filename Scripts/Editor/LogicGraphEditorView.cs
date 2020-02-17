@@ -24,6 +24,7 @@ namespace GeoTetra.GTLogicGraph
         private SearchDetailWindowProvider _searchDetailWindowProvider;
         private bool _reloadGraph;
         private IMGUIContainer _toolbarDetail;
+        private Blackboard _blackBoard;
         
         public enum eAccuracyLevel
         {
@@ -111,26 +112,7 @@ namespace GeoTetra.GTLogicGraph
                 }
             }
 
-            //menu.AddItem(EditorGUIUtility.TrTextContent("Parameter"), false, OnMainAddPropertyCategory);
-            /*
-            if (!(controller.model.subgraph is VisualEffectSubgraphOperator))
-            {
-                menu.AddItem(EditorGUIUtility.TrTextContent("Category"), false, OnAddCategory);
-                menu.AddSeparator(string.Empty);
-            }
-
-            foreach (var parameter in VFXLibrary.GetParameters())
-            {
-                VFXParameter model = parameter.model as VFXParameter;
-
-                var type = model.type;
-                if (type == typeof(GPUEvent))
-                    continue;
-
-                menu.AddItem(EditorGUIUtility.TextContent(type.UserFriendlyName()), false, OnAddParameter, parameter);
-            }
-            */
-
+          
             menu.ShowAsContext();
         }
 
@@ -140,6 +122,10 @@ namespace GeoTetra.GTLogicGraph
             BlackboardField field = new BlackboardField(null, p.Name, p.Type.Name);
             field.userData = p;
             p.Bb.Add(field);
+
+            LogicParameter param = new LogicParameter();
+            param.DisplayName = p.Name;
+            AddParameter(param);
         }
 
 
@@ -153,6 +139,11 @@ namespace GeoTetra.GTLogicGraph
             {
                 (element as BlackboardField).name = value;
                 (element as BlackboardField).text = value;
+                tPropertyParameter p = (element as BlackboardField).userData as tPropertyParameter;
+                if (p != null)
+                {
+                    p.Name = value;
+                }
             }
         }
 
@@ -235,15 +226,15 @@ namespace GeoTetra.GTLogicGraph
                 
                 _graphView.graphViewChanged = GraphViewChanged;
 
-                var blackBoard = new Blackboard();
-                blackBoard.SetPosition(new Rect(4, 40, 300, 100));
-                blackBoard.title = "Properties";
-                blackBoard.subTitle = String.Empty;
-                blackBoard.addItemRequested = OnMainAddProperty;
-                blackBoard.editTextRequested = OnMainEditPropertyName;
-                blackBoard.RegisterCallback<DragUpdatedEvent>(OnPropertyDragUpdatedEvent);
-                blackBoard.RegisterCallback<DragPerformEvent>(OnPropertyDragPerformEvent);
-                _graphView.Add(blackBoard);
+                _blackBoard = new Blackboard();
+                _blackBoard.SetPosition(new Rect(4, 40, 300, 100));
+                _blackBoard.title = "Properties";
+                _blackBoard.subTitle = String.Empty;
+                _blackBoard.addItemRequested = OnMainAddProperty;
+                _blackBoard.editTextRequested = OnMainEditPropertyName;
+                _blackBoard.RegisterCallback<DragUpdatedEvent>(OnPropertyDragUpdatedEvent);
+                _blackBoard.RegisterCallback<DragPerformEvent>(OnPropertyDragPerformEvent);
+                _graphView.Add(_blackBoard);
 
                 _graphView.StretchToParentSize();
                 mainGraph.RegisterCallback<DragEnterEvent>(OnMainGraphDragEntryEvent);
@@ -363,8 +354,8 @@ namespace GeoTetra.GTLogicGraph
 
         private void OnMainGraphDragUpdatedEvent(DragUpdatedEvent evt)
         {
-            DragAndDrop.visualMode = DragAndDropVisualMode.Link;
-            DragAndDrop.AcceptDrag();
+            DragAndDrop.visualMode = DragAndDropVisualMode.Move;
+            
             evt.StopPropagation();
         }
 
@@ -386,10 +377,9 @@ namespace GeoTetra.GTLogicGraph
                         var windowMousePosition = evt.mousePosition;
                         var graphMousePosition = _graphView.contentViewContainer.WorldToLocal(windowMousePosition);
                         node.Position = new Vector3(graphMousePosition.x, graphMousePosition.y, 0);
-
+                        node.DisplayName = param.Name;
+                        node.BoundObject = param.BoundObject; //*** Fix so that boundobject can be set before or after addnode
                         AddNode(node);
-
-                        node.BoundObject = param.BoundObject;
                     }
                 }
             }
@@ -406,6 +396,11 @@ namespace GeoTetra.GTLogicGraph
 
         private void LoadElements()
         {
+            for (int i = 0; i < _logicGraphEditorObject.LogicGraphData.SerializedParameters.Count; ++i)
+            {
+                AddParameterFromLoad(_logicGraphEditorObject.LogicGraphData.SerializedParameters[i]);
+            }
+
             for (int i = 0; i < _logicGraphEditorObject.LogicGraphData.SerializedNodes.Count; ++i)
             {
                 AddNodeFromload(_logicGraphEditorObject.LogicGraphData.SerializedNodes[i]);
@@ -603,7 +598,7 @@ namespace GeoTetra.GTLogicGraph
 
             nodeEditor.Owner = _graphView;
             nodeEditor.DetailView = _detailGraphView;
-            var nodeView = new LogicNodeView {userData = nodeEditor};
+            var nodeView = new LogicNodeView { userData = nodeEditor };
             _graphView.AddElement(nodeView);
             nodeView.Initialize(nodeEditor, _edgeConnectorListener);
             nodeView.MarkDirtyRepaint();
@@ -618,10 +613,19 @@ namespace GeoTetra.GTLogicGraph
                 {
                     if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(NodeEditor)))
                     {
-                        var attrs = type.GetCustomAttributes(typeof(NodeEditorType), false) as NodeEditorType[];
+                        var attrs = type.GetCustomAttributes(typeof(TitleAttribute), false) as TitleAttribute[];
                         if (attrs != null && attrs.Length > 0)
                         {
-                            if (attrs[0].NodeType.Name == serializedNode.NodeType)
+                            string val = "";
+                            for (int a = 0; a < attrs[0].title.Length; ++a)
+                            {
+                                val += attrs[0].title[a];
+                                if (a < attrs[0].title.Length - 1)
+                                {
+                                    val += "/";
+                                }
+                            }
+                            if (val == serializedNode.NodeType)
                             {
                                 nodeEditor = (NodeEditor) Activator.CreateInstance(type);
                             }
@@ -647,6 +651,26 @@ namespace GeoTetra.GTLogicGraph
             }
         }
 
+        public void AddParameter(LogicParameter param)
+        {
+            SerializedParameter serializedParam = new SerializedParameter
+            {
+                Type = param.GetType().Name,
+                JSON = param.DisplayName
+            };
+            _logicGraphEditorObject.LogicGraphData.SerializedParameters.Add(serializedParam);
+        }
+
+        public void AddParameterFromLoad(SerializedParameter param)
+        {
+            //***
+            tPropertyParameter p = new tPropertyParameter(_blackBoard, "test", typeof(FieldBool), null);
+
+            BlackboardField field = new BlackboardField(null, p.Name, p.Type.Name);
+            field.userData = p;
+            p.Bb.Add(field);
+        }
+
         public void AddEdge(Edge edgeView)
         {
             IPortDescription leftPortDescription;
@@ -657,9 +681,11 @@ namespace GeoTetra.GTLogicGraph
             SerializedEdge serializedEdge = new SerializedEdge
             {
                 SourceNodeGuid = leftPortDescription.Owner.NodeGuid,
-                SourceMemberName = leftPortDescription.MemberName,
+                SourceMemberGuid = leftPortDescription.Guid,
+                SourceMemberName = leftPortDescription.MemberName,                
                 TargetNodeGuid = rightPortDescription.Owner.NodeGuid,
-                TargetMemberName = rightPortDescription.MemberName
+                TargetMemberName = rightPortDescription.MemberName,
+                TargetMemberGuid = rightPortDescription.Guid
             };
 
             _logicGraphEditorObject.LogicGraphData.SerializedEdges.Add(serializedEdge);
@@ -681,12 +707,12 @@ namespace GeoTetra.GTLogicGraph
             if (sourceNodeView != null)
             {
                 PortView sourceAnchor = sourceNodeView.outputContainer.Children().OfType<PortView>()
-                    .FirstOrDefault(x => x.PortDescription.MemberName == serializedEdge.SourceMemberName);
+                    .FirstOrDefault(x => x.PortDescription.Guid == serializedEdge.SourceMemberGuid);
 
                 LogicNodeView targetNodeView = _graphView.nodes.ToList().OfType<LogicNodeView>()
                     .FirstOrDefault(x => x.NodeEditor.NodeGuid == serializedEdge.TargetNodeGuid);
                 PortView targetAnchor = targetNodeView.inputContainer.Children().OfType<PortView>()
-                    .FirstOrDefault(x => x.PortDescription.MemberName == serializedEdge.TargetMemberName);
+                    .FirstOrDefault(x => x.PortDescription.Guid == serializedEdge.TargetMemberGuid);
 
                 var edgeView = new Edge
                 {
@@ -725,8 +751,10 @@ namespace GeoTetra.GTLogicGraph
             SerializedEdge serializedEdge = new SerializedEdge
             {
                 SourceNodeGuid = leftPortDescription.Owner.NodeGuid,
+                SourceMemberGuid = leftPortDescription.Guid,
                 SourceMemberName = leftPortDescription.MemberName,
                 TargetNodeGuid = rightPortDescription.Owner.NodeGuid,
+                TargetMemberGuid = rightPortDescription.Guid,
                 TargetMemberName = rightPortDescription.MemberName
             };
             contextNode.SerializedDetailEdges.Add(serializedEdge);

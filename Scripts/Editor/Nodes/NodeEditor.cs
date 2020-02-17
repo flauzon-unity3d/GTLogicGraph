@@ -74,10 +74,19 @@ namespace GeoTetra.GTLogicGraph
                        
         public string NodeType()
         {
-            var attrs = GetType().GetCustomAttributes(typeof(NodeEditorType), false) as NodeEditorType[];
+            var attrs = GetType().GetCustomAttributes(typeof(TitleAttribute), false) as TitleAttribute[];
             if (attrs != null && attrs.Length > 0)
             {
-                return attrs[0].NodeType.Name;
+                string val = "";
+                for (int a = 0; a < attrs[0].title.Length; ++a)
+                {
+                    val += attrs[0].title[a];
+                    if (a < attrs[0].title.Length - 1)
+                    {
+                        val += "/";
+                    }
+                }
+                return val;
             }
             else
             {
@@ -95,10 +104,19 @@ namespace GeoTetra.GTLogicGraph
                 {
                     if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(NodeDetailEditor)))
                     {
-                        var attrs = type.GetCustomAttributes(typeof(NodeDetailEditorType), false) as NodeDetailEditorType[];
+                        var attrs = type.GetCustomAttributes(typeof(TitleAttribute), false) as TitleAttribute[];
                         if (attrs != null && attrs.Length > 0)
                         {
-                            if (attrs[0].NodeType.Name == serializedNode.NodeType)
+                            string val = "";
+                            for (int a = 0; a < attrs[0].title.Length; ++a)
+                            {
+                                val += attrs[0].title[a];
+                                if (a < attrs[0].title.Length - 1)
+                                {
+                                    val += "/";
+                                }
+                            }
+                            if (val == serializedNode.NodeType)
                             {
                                 nodeEditor = (NodeDetailEditor)Activator.CreateInstance(type);
                             }
@@ -131,12 +149,12 @@ namespace GeoTetra.GTLogicGraph
             if (sourceNodeView != null)
             {
                 PortView sourceAnchor = sourceNodeView.outputContainer.Children().OfType<PortView>()
-                    .FirstOrDefault(x => x.PortDescription.MemberName == serializedEdge.SourceMemberName);
+                    .FirstOrDefault(x => x.PortDescription.Guid == serializedEdge.SourceMemberGuid);
 
                 LogicDetailNodeView targetNodeView = DetailView.nodes.ToList().OfType<LogicDetailNodeView>()
                     .FirstOrDefault(x => x.NodeEditor.NodeGuid == serializedEdge.TargetNodeGuid);
                 PortView targetAnchor = targetNodeView.inputContainer.Children().OfType<PortView>()
-                    .FirstOrDefault(x => x.PortDescription.MemberName == serializedEdge.TargetMemberName);
+                    .FirstOrDefault(x => x.PortDescription.Guid == serializedEdge.TargetMemberGuid);
 
                 var edgeView = new Edge
                 {

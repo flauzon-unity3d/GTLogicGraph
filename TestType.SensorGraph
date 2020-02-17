@@ -1,0 +1,77 @@
+{
+    "_serializedParameters": [],
+    "_serializedInputNodes": [],
+    "_serializedOutputNodes": [],
+    "_serializedNodes": [
+        {
+            "NodeType": "Power/Power Supply",
+            "JSON": "{\"_nodeGuid\":\"7c1f9039-110c-46a8-8691-801019d8cd6e\",\"_boundObject\":\"\",\"_displayName\":\"Power Supply\",\"_position\":{\"x\":83.0,\"y\":-92.0,\"z\":0.0},\"_expanded\":true,\"_serializedDetailNodes\":[],\"_serializedDetailEdges\":[],\"_voltage\":{\"_data\":24.0},\"_current\":{\"_data\":36.0}}"
+        },
+        {
+            "NodeType": "Photon/Light Emitter",
+            "JSON": "{\"_nodeGuid\":\"54c5b707-a5fa-408b-892d-6fdd0a6694e5\",\"_boundObject\":\"\",\"_displayName\":\"Light Emitter\",\"_position\":{\"x\":846.0,\"y\":-146.0,\"z\":0.0},\"_expanded\":true,\"_serializedDetailNodes\":[{\"NodeType\":\"Photon/Ray Distribution\",\"JSON\":\"{\\\"_nodeGuid\\\":\\\"38911a52-b67b-4041-97a6-bfd56314cad8\\\",\\\"_boundObject\\\":\\\"\\\",\\\"_displayName\\\":\\\"Ray Distribution\\\",\\\"_position\\\":{\\\"x\\\":645.0,\\\"y\\\":80.0,\\\"z\\\":0.0},\\\"_expanded\\\":true,\\\"_in\\\":{\\\"_data\\\":0.0},\\\"_out\\\":{\\\"_data\\\":0.0}}\"}],\"_serializedDetailEdges\":[],\"_WorldPosition\":{\"_data\":{\"x\":0.0,\"y\":0.0,\"z\":0.0}},\"_WorldRotation\":{\"_data\":{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":0.0}},\"_XChannels\":{\"_data\":0.0},\"_YChannels\":{\"_data\":0.0},\"_BatchMode\":{\"_data\":false},\"_Rate\":{\"_data\":0.0}}"
+        },
+        {
+            "NodeType": "Photon/Photo Detector",
+            "JSON": "{\"_nodeGuid\":\"83394e1c-f670-4407-96e9-3f21dc7aed0e\",\"_boundObject\":\"\",\"_displayName\":\"Photo Detector\",\"_position\":{\"x\":1168.0,\"y\":-133.0,\"z\":0.0},\"_expanded\":true,\"_serializedDetailNodes\":[{\"NodeType\":\"Photon/Ray Wavelength\",\"JSON\":\"{\\\"_nodeGuid\\\":\\\"3bf357f7-d1f0-413c-b08d-30695173ddee\\\",\\\"_boundObject\\\":\\\"\\\",\\\"_displayName\\\":\\\"Ray Wavelength\\\",\\\"_position\\\":{\\\"x\\\":1039.0,\\\"y\\\":86.0,\\\"z\\\":0.0},\\\"_expanded\\\":true,\\\"_in\\\":{\\\"_data\\\":0.0},\\\"_out\\\":{\\\"_data\\\":0.0}}\"}],\"_serializedDetailEdges\":[],\"_ray\":{\"_data\":0.0},\"_positionWorld\":{\"_data\":{\"x\":0.0,\"y\":0.0,\"z\":0.0}},\"_rotationWorld\":{\"_data\":{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":0.0}}}"
+        },
+        {
+            "NodeType": "Actuator/Servo Motor",
+            "JSON": "{\"_nodeGuid\":\"9da8682a-7c13-4793-9a99-275c745c0b08\",\"_boundObject\":\"\",\"_displayName\":\"Servo Motor\",\"_position\":{\"x\":329.0,\"y\":-104.0,\"z\":0.0},\"_expanded\":true,\"_serializedDetailNodes\":[],\"_serializedDetailEdges\":[],\"_power\":{\"_data\":0.0},\"_desiredAngle\":{\"_data\":0.0},\"_positionWorld\":{\"_data\":{\"x\":0.0,\"y\":0.0,\"z\":0.0}},\"_rotationWorld\":{\"_data\":{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":0.0}}}"
+        },
+        {
+            "NodeType": "Type/Field Float",
+            "JSON": "{\"_nodeGuid\":\"c84f2e69-b0eb-470f-a967-b55a247272dc\",\"_boundObject\":\"\",\"_displayName\":\"Float\",\"_position\":{\"x\":432.0,\"y\":-225.0,\"z\":0.0},\"_expanded\":true,\"_serializedDetailNodes\":[],\"_serializedDetailEdges\":[],\"_in\":{\"_data\":0.0},\"_out\":{\"_data\":0.0}}"
+        }
+    ],
+    "_serializedEdges": [
+        {
+            "SourceNodeGuid": "54c5b707-a5fa-408b-892d-6fdd0a6694e5",
+            "SourceMemberGuid": "Ray",
+            "SourceMemberName": "FieldFloat",
+            "TargetNodeGuid": "83394e1c-f670-4407-96e9-3f21dc7aed0e",
+            "TargetMemberGuid": "Ray",
+            "TargetMemberName": "FieldFloat"
+        },
+        {
+            "SourceNodeGuid": "7c1f9039-110c-46a8-8691-801019d8cd6e",
+            "SourceMemberGuid": "Power",
+            "SourceMemberName": "FieldFloat",
+            "TargetNodeGuid": "9da8682a-7c13-4793-9a99-275c745c0b08",
+            "TargetMemberGuid": "Power",
+            "TargetMemberName": "FieldFloat"
+        },
+        {
+            "SourceNodeGuid": "9da8682a-7c13-4793-9a99-275c745c0b08",
+            "SourceMemberGuid": "World Rotation",
+            "SourceMemberName": "FieldQuaternion",
+            "TargetNodeGuid": "54c5b707-a5fa-408b-892d-6fdd0a6694e5",
+            "TargetMemberGuid": "World Rotation",
+            "TargetMemberName": "FieldQuaternion"
+        },
+        {
+            "SourceNodeGuid": "c84f2e69-b0eb-470f-a967-b55a247272dc",
+            "SourceMemberGuid": "Data",
+            "SourceMemberName": "FieldFloat",
+            "TargetNodeGuid": "54c5b707-a5fa-408b-892d-6fdd0a6694e5",
+            "TargetMemberGuid": "X Channels",
+            "TargetMemberName": "FieldFloat"
+        },
+        {
+            "SourceNodeGuid": "c84f2e69-b0eb-470f-a967-b55a247272dc",
+            "SourceMemberGuid": "Data",
+            "SourceMemberName": "FieldFloat",
+            "TargetNodeGuid": "54c5b707-a5fa-408b-892d-6fdd0a6694e5",
+            "TargetMemberGuid": "Y Channels",
+            "TargetMemberName": "FieldFloat"
+        },
+        {
+            "SourceNodeGuid": "c84f2e69-b0eb-470f-a967-b55a247272dc",
+            "SourceMemberGuid": "Data",
+            "SourceMemberName": "FieldFloat",
+            "TargetNodeGuid": "54c5b707-a5fa-408b-892d-6fdd0a6694e5",
+            "TargetMemberGuid": "Rate",
+            "TargetMemberName": "FieldFloat"
+        }
+    ]
+}

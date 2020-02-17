@@ -4,7 +4,6 @@ using UnityEngine;
 namespace GeoTetra.GTLogicGraph
 {
     [Title("Control", "PID Controller")]
-    [NodeDetailEditorType(typeof(PIDControllerLogicNodeDetail))]
     public class PIDControllerNodeDetailEditor : NodeDetailEditor
     {
         [SerializeField]
@@ -22,9 +21,5 @@ namespace GeoTetra.GTLogicGraph
             AddVarSlot("In", PortDirection.Input, _in);
             AddVarSlot("Out", PortDirection.Output, _out);
         }
-    }
-
-    public class PIDControllerLogicNodeDetail : LogicNode
-    {
     }
 }

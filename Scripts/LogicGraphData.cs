@@ -8,7 +8,10 @@ namespace GeoTetra.GTLogicGraph
 {
 	[Serializable]
 	public class LogicGraphData 
-	{		
+	{
+        [SerializeField]
+        private List<SerializedParameter> _serializedParameters = new List<SerializedParameter>();
+
 		[SerializeField]
 		private List<SerializedNode> _serializedInputNodes = new List<SerializedNode>();
 		
@@ -21,7 +24,12 @@ namespace GeoTetra.GTLogicGraph
 		[SerializeField]
 		private List<SerializedEdge> _serializedEdges = new List<SerializedEdge>();
 		
-		public List<SerializedEdge> SerializedEdges
+		public List<SerializedParameter> SerializedParameters
+        {
+            get { return _serializedParameters; }
+        }
+        
+        public List<SerializedEdge> SerializedEdges
 		{
 			get { return _serializedEdges; }
 		}
@@ -42,6 +50,13 @@ namespace GeoTetra.GTLogicGraph
 		}
 	}
 
+    [Serializable]
+    public class SerializedParameter
+    {
+        public string Type;
+        public string JSON;
+    }
+
 	[Serializable]
 	public class SerializedNode
 	{
@@ -53,8 +68,10 @@ namespace GeoTetra.GTLogicGraph
 	public class SerializedEdge
 	{
 		public string SourceNodeGuid;
-		public string SourceMemberName;
+		public string SourceMemberGuid;
+        public string SourceMemberName;
 		public string TargetNodeGuid;
-		public string TargetMemberName;
+		public string TargetMemberGuid;
+        public string TargetMemberName;
 	}
 }

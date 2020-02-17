@@ -15,7 +15,7 @@ namespace GeoTetra.GTLogicGraph
 
         IPortDescription _portDescription;
 
-        public static Port Create(IPortDescription portDescription, IEdgeConnectorListener connectorListener)
+        public static Port Create(INodeEditor nodeEditor, IPortDescription portDescription, IEdgeConnectorListener connectorListener)
         {
             var port = new PortView(Orientation.Horizontal, 
                 portDescription.IsInputSlot ? Direction.Input : Direction.Output,
@@ -25,8 +25,9 @@ namespace GeoTetra.GTLogicGraph
                 m_EdgeConnector = new EdgeConnector<Edge>(connectorListener),
             };
             port.AddManipulator(port.m_EdgeConnector);
-
+            port.userData = nodeEditor;
             portDescription.SpawnEditor(port);
+            portDescription.RefreshEditor();
             
             port.PortDescription = portDescription;
             return port;

@@ -4,7 +4,6 @@ using UnityEngine;
 namespace GeoTetra.GTLogicGraph
 {
     [Title("Type", "Field Bool")]
-    [NodeEditorType(typeof(FieldBoolLogicNode))]
     public class FieldBoolNodeEditor : NodeEditor
     {
         [SerializeField]
@@ -23,14 +22,8 @@ namespace GeoTetra.GTLogicGraph
             AddVarSlot("Data", PortDirection.Output, _out);
         }
     }
-
-    public class FieldBoolLogicNode : LogicNode
-    {       
-    }
-
-
-    [Title("Type", "Field Float")]
-    [NodeEditorType(typeof(FieldFloatLogicNode))]
+    
+    [Title("Type", "Field Float")]    
     public class FieldFloatNodeEditor : NodeEditor
     {
         [SerializeField]
@@ -50,13 +43,7 @@ namespace GeoTetra.GTLogicGraph
         }
     }
 
-    public class FieldFloatLogicNode : LogicNode
-    {
-    }
-
-
     [Title("Type", "Field Vector2")]
-    [NodeEditorType(typeof(FieldVector2LogicNode))]
     public class FieldVector2NodeEditor : NodeEditor
     {
         [SerializeField]
@@ -76,13 +63,7 @@ namespace GeoTetra.GTLogicGraph
         }
     }
 
-    public class FieldVector2LogicNode : LogicNode
-    {
-    }
-
-
     [Title("Type", "Field Vector3")]
-    [NodeEditorType(typeof(FieldVector3LogicNode))]
     public class FieldVector3NodeEditor : NodeEditor
     {
         [SerializeField]
@@ -102,14 +83,8 @@ namespace GeoTetra.GTLogicGraph
         }
     }
 
-    public class FieldVector3LogicNode : LogicNode
-    {
-    }
-
-
 
     [Title("Type", "Field Vector4")]
-    [NodeEditorType(typeof(FieldVector4LogicNode))]
     public class FieldVector4NodeEditor : NodeEditor
     {
         [SerializeField]
@@ -129,14 +104,7 @@ namespace GeoTetra.GTLogicGraph
         }
     }
 
-    public class FieldVector4LogicNode : LogicNode
-    {
-    }
-
-
-
     [Title("Type", "Field Quaternion")]
-    [NodeEditorType(typeof(FieldQuaternionLogicNode))]
     public class FieldQuaternionNodeEditor : NodeEditor
     {
         [SerializeField]
@@ -154,9 +122,5 @@ namespace GeoTetra.GTLogicGraph
             AddVarSlot("Set", PortDirection.Input, _in);
             AddVarSlot("Data", PortDirection.Output, _out);
         }
-    }
-
-    public class FieldQuaternionLogicNode : LogicNode
-    {
     }
 }

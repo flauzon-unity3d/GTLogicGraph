@@ -4,7 +4,6 @@ using UnityEngine;
 namespace GeoTetra.GTLogicGraph
 {
     [Title("Photon", "Photo Detector")]
-    [NodeEditorType(typeof(PhotoDetectorLogicNode))]
     public class PhotoDetectorNodeEditor : NodeEditor
     {
         [SerializeField]
@@ -33,18 +32,6 @@ namespace GeoTetra.GTLogicGraph
             AddVarSlot("World Rotation", PortDirection.Input, _rotationWorld);
             AddVarSlot("Ray", PortDirection.Output, _outRay);
             AddVarSlot("Intensity", PortDirection.Output, _outIntensity);
-        }
-    }
-
-    public class PhotoDetectorLogicNode : LogicNode
-    {
-        [NodePort]
-        public event Action<float> Vector1Output;
-
-        [Vector1Input]
-        public void TestInput(float value)
-        {
-            if (Vector1Output != null) Vector1Output(value);
         }
     }
 }

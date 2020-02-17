@@ -52,7 +52,7 @@ namespace GeoTetra.GTLogicGraph
         {
             foreach (var slot in slots)
             {
-                var port = PortView.Create(slot, _connectorListener);
+                var port = PortView.Create(NodeEditor, slot, _connectorListener);
                 if (slot.IsOutputSlot)
                     outputContainer.Add(port);
                 else

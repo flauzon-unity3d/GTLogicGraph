@@ -4,7 +4,6 @@ using UnityEngine;
 namespace GeoTetra.GTLogicGraph
 {
     [Title("Photon", "Light Emitter")]
-    [NodeEditorType(typeof(LightEmitterLogicNode))]
     public class LightEmitterNodeEditor : NodeEditor
     {
         [SerializeField]
@@ -42,9 +41,5 @@ namespace GeoTetra.GTLogicGraph
             AddVarSlot("Rate", PortDirection.Input, _Rate);
             AddVarSlot("Ray", PortDirection.Output, _Ray);
         }
-    }
-
-    public class LightEmitterLogicNode : LogicNode
-    {       
     }
 }
