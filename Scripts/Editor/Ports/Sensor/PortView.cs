@@ -3,7 +3,7 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace GeoTetra.GTLogicGraph
+namespace SensorFoundation.SensorGraph
 {
     public sealed class PortView : Port
     {
@@ -46,7 +46,7 @@ namespace GeoTetra.GTLogicGraph
                     throw new ArgumentException("Cannot change direction of already created port");
                 _portDescription = value;
                 portName = PortDescription.DisplayName;
-                visualClass = PortDescription.ValueType.ToString();
+                visualClass = PortDescription.ValueType.Name;
             }
         }
     }

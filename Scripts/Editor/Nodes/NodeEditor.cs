@@ -5,7 +5,7 @@ using System.Reflection;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-namespace GeoTetra.GTLogicGraph
+namespace SensorFoundation.SensorGraph
 {
     /// <summary>
     /// Describes how to draw a node, paired with GenericNodeview
@@ -149,12 +149,12 @@ namespace GeoTetra.GTLogicGraph
             if (sourceNodeView != null)
             {
                 PortView sourceAnchor = sourceNodeView.outputContainer.Children().OfType<PortView>()
-                    .FirstOrDefault(x => x.PortDescription.Guid == serializedEdge.SourceMemberGuid);
+                    .FirstOrDefault(x => x.PortDescription.Guid == serializedEdge.SourceMemberPortName);
 
                 LogicDetailNodeView targetNodeView = DetailView.nodes.ToList().OfType<LogicDetailNodeView>()
                     .FirstOrDefault(x => x.NodeEditor.NodeGuid == serializedEdge.TargetNodeGuid);
                 PortView targetAnchor = targetNodeView.inputContainer.Children().OfType<PortView>()
-                    .FirstOrDefault(x => x.PortDescription.Guid == serializedEdge.TargetMemberGuid);
+                    .FirstOrDefault(x => x.PortDescription.Guid == serializedEdge.TargetMemberPortName);
 
                 var edgeView = new Edge
                 {

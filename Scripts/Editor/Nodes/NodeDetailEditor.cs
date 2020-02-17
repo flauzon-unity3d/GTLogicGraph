@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GeoTetra.GTLogicGraph
+namespace SensorFoundation.SensorGraph
 {
     /// <summary>
     /// Describes how to draw a node, paired with GenericNodeview

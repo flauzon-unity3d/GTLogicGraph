@@ -5,7 +5,7 @@ using UnityEditor.Experimental.AssetImporters;
 using UnityEditor.ProjectWindowCallback;
 using UnityEngine;
 
-namespace GeoTetra.GTLogicGraph
+namespace SensorFoundation.SensorGraph
 {
 	[CustomEditor(typeof(LogicGraphImporter))]
 	public class LogicGraphImporterEditor : ScriptedImporterEditor

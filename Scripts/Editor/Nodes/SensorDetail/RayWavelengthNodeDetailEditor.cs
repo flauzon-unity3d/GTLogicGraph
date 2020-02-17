@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GeoTetra.GTLogicGraph
+namespace SensorFoundation.SensorGraph
 {
     [Title("Photon", "Ray Wavelength")]
     public class RayWavelengthNodeDetailEditor : NodeDetailEditor

@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 using UnityEditor.UIElements;
 using Edge = UnityEditor.Experimental.GraphView.Edge;
 
-namespace GeoTetra.GTLogicGraph
+namespace SensorFoundation.SensorGraph
 {
     public class EdgeConnectorListener : IEdgeConnectorListener
     {

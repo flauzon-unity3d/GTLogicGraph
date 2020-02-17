@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using GeoTetra.GTLogicGraph;
+using SensorFoundation.SensorGraph;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.PlayerLoop;

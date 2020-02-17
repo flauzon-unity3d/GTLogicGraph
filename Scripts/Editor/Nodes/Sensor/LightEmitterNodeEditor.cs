@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace GeoTetra.GTLogicGraph
+namespace SensorFoundation.SensorGraph
 {
     [Title("Photon", "Light Emitter")]
     public class LightEmitterNodeEditor : NodeEditor

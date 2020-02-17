@@ -5,7 +5,7 @@ using System.Reflection;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-namespace GeoTetra.GTLogicGraph
+namespace SensorFoundation.SensorGraph
 {
     /// <summary>
     /// Describes how to draw a node, paired with GenericNodeview

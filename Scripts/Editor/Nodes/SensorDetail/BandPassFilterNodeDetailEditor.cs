@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GeoTetra.GTLogicGraph
+namespace SensorFoundation.SensorGraph
 {
     [Title("Signal", "Band Pass Filter")]
     public class BandPassFilterNodeDetailEditor : NodeDetailEditor

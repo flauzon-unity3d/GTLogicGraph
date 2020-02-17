@@ -1,15 +1,13 @@
 {
     "_serializedParameters": [],
-    "_serializedInputNodes": [],
-    "_serializedOutputNodes": [],
     "_serializedNodes": [
         {
             "NodeType": "Power/Power Supply",
-            "JSON": "{\"_nodeGuid\":\"7c1f9039-110c-46a8-8691-801019d8cd6e\",\"_boundObject\":\"\",\"_displayName\":\"Power Supply\",\"_position\":{\"x\":83.0,\"y\":-92.0,\"z\":0.0},\"_expanded\":true,\"_serializedDetailNodes\":[],\"_serializedDetailEdges\":[],\"_voltage\":{\"_data\":24.0},\"_current\":{\"_data\":36.0}}"
+            "JSON": "{\"_nodeGuid\":\"7c1f9039-110c-46a8-8691-801019d8cd6e\",\"_boundObject\":\"\",\"_displayName\":\"Power Supply\",\"_position\":{\"x\":33.0,\"y\":-90.0,\"z\":0.0},\"_expanded\":true,\"_serializedDetailNodes\":[],\"_serializedDetailEdges\":[],\"_voltage\":{\"_data\":24.0},\"_current\":{\"_data\":36.0}}"
         },
         {
             "NodeType": "Photon/Light Emitter",
-            "JSON": "{\"_nodeGuid\":\"54c5b707-a5fa-408b-892d-6fdd0a6694e5\",\"_boundObject\":\"\",\"_displayName\":\"Light Emitter\",\"_position\":{\"x\":846.0,\"y\":-146.0,\"z\":0.0},\"_expanded\":true,\"_serializedDetailNodes\":[{\"NodeType\":\"Photon/Ray Distribution\",\"JSON\":\"{\\\"_nodeGuid\\\":\\\"38911a52-b67b-4041-97a6-bfd56314cad8\\\",\\\"_boundObject\\\":\\\"\\\",\\\"_displayName\\\":\\\"Ray Distribution\\\",\\\"_position\\\":{\\\"x\\\":645.0,\\\"y\\\":80.0,\\\"z\\\":0.0},\\\"_expanded\\\":true,\\\"_in\\\":{\\\"_data\\\":0.0},\\\"_out\\\":{\\\"_data\\\":0.0}}\"}],\"_serializedDetailEdges\":[],\"_WorldPosition\":{\"_data\":{\"x\":0.0,\"y\":0.0,\"z\":0.0}},\"_WorldRotation\":{\"_data\":{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":0.0}},\"_XChannels\":{\"_data\":0.0},\"_YChannels\":{\"_data\":0.0},\"_BatchMode\":{\"_data\":false},\"_Rate\":{\"_data\":0.0}}"
+            "JSON": "{\"_nodeGuid\":\"54c5b707-a5fa-408b-892d-6fdd0a6694e5\",\"_boundObject\":\"\",\"_displayName\":\"Light Emitter\",\"_position\":{\"x\":847.0,\"y\":-165.0,\"z\":0.0},\"_expanded\":true,\"_serializedDetailNodes\":[{\"NodeType\":\"Photon/Ray Distribution\",\"JSON\":\"{\\\"_nodeGuid\\\":\\\"38911a52-b67b-4041-97a6-bfd56314cad8\\\",\\\"_boundObject\\\":\\\"\\\",\\\"_displayName\\\":\\\"Ray Distribution\\\",\\\"_position\\\":{\\\"x\\\":645.0,\\\"y\\\":80.0,\\\"z\\\":0.0},\\\"_expanded\\\":true,\\\"_in\\\":{\\\"_data\\\":0.0},\\\"_out\\\":{\\\"_data\\\":0.0}}\"}],\"_serializedDetailEdges\":[],\"_WorldPosition\":{\"_data\":{\"x\":0.0,\"y\":0.0,\"z\":0.0}},\"_WorldRotation\":{\"_data\":{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":0.0}},\"_XChannels\":{\"_data\":0.0},\"_YChannels\":{\"_data\":0.0},\"_BatchMode\":{\"_data\":false},\"_Rate\":{\"_data\":0.0}}"
         },
         {
             "NodeType": "Photon/Photo Detector",
@@ -17,61 +15,61 @@
         },
         {
             "NodeType": "Actuator/Servo Motor",
-            "JSON": "{\"_nodeGuid\":\"9da8682a-7c13-4793-9a99-275c745c0b08\",\"_boundObject\":\"\",\"_displayName\":\"Servo Motor\",\"_position\":{\"x\":329.0,\"y\":-104.0,\"z\":0.0},\"_expanded\":true,\"_serializedDetailNodes\":[],\"_serializedDetailEdges\":[],\"_power\":{\"_data\":0.0},\"_desiredAngle\":{\"_data\":0.0},\"_positionWorld\":{\"_data\":{\"x\":0.0,\"y\":0.0,\"z\":0.0}},\"_rotationWorld\":{\"_data\":{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":0.0}}}"
+            "JSON": "{\"_nodeGuid\":\"9da8682a-7c13-4793-9a99-275c745c0b08\",\"_boundObject\":\"\",\"_displayName\":\"Servo Motor\",\"_position\":{\"x\":287.0,\"y\":-90.0,\"z\":0.0},\"_expanded\":true,\"_serializedDetailNodes\":[],\"_serializedDetailEdges\":[],\"_power\":{\"_data\":0.0},\"_desiredAngle\":{\"_data\":0.0},\"_positionWorld\":{\"_data\":{\"x\":0.0,\"y\":0.0,\"z\":0.0}},\"_rotationWorld\":{\"_data\":{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":0.0}}}"
         },
         {
             "NodeType": "Type/Field Float",
-            "JSON": "{\"_nodeGuid\":\"c84f2e69-b0eb-470f-a967-b55a247272dc\",\"_boundObject\":\"\",\"_displayName\":\"Float\",\"_position\":{\"x\":432.0,\"y\":-225.0,\"z\":0.0},\"_expanded\":true,\"_serializedDetailNodes\":[],\"_serializedDetailEdges\":[],\"_in\":{\"_data\":0.0},\"_out\":{\"_data\":0.0}}"
+            "JSON": "{\"_nodeGuid\":\"c84f2e69-b0eb-470f-a967-b55a247272dc\",\"_boundObject\":\"\",\"_displayName\":\"Float\",\"_position\":{\"x\":619.0,\"y\":8.0,\"z\":0.0},\"_expanded\":true,\"_serializedDetailNodes\":[],\"_serializedDetailEdges\":[],\"_in\":{\"_data\":0.0},\"_out\":{\"_data\":0.0}}"
         }
     ],
     "_serializedEdges": [
         {
             "SourceNodeGuid": "54c5b707-a5fa-408b-892d-6fdd0a6694e5",
-            "SourceMemberGuid": "Ray",
-            "SourceMemberName": "FieldFloat",
+            "SourceMemberPortName": "Ray",
+            "SourceMemberTypeName": "FieldFloat",
             "TargetNodeGuid": "83394e1c-f670-4407-96e9-3f21dc7aed0e",
-            "TargetMemberGuid": "Ray",
-            "TargetMemberName": "FieldFloat"
+            "TargetMemberPortName": "Ray",
+            "TargetMemberTypeName": "FieldFloat"
         },
         {
             "SourceNodeGuid": "7c1f9039-110c-46a8-8691-801019d8cd6e",
-            "SourceMemberGuid": "Power",
-            "SourceMemberName": "FieldFloat",
+            "SourceMemberPortName": "Power",
+            "SourceMemberTypeName": "FieldFloat",
             "TargetNodeGuid": "9da8682a-7c13-4793-9a99-275c745c0b08",
-            "TargetMemberGuid": "Power",
-            "TargetMemberName": "FieldFloat"
+            "TargetMemberPortName": "Power",
+            "TargetMemberTypeName": "FieldFloat"
         },
         {
             "SourceNodeGuid": "9da8682a-7c13-4793-9a99-275c745c0b08",
-            "SourceMemberGuid": "World Rotation",
-            "SourceMemberName": "FieldQuaternion",
+            "SourceMemberPortName": "World Rotation",
+            "SourceMemberTypeName": "FieldQuaternion",
             "TargetNodeGuid": "54c5b707-a5fa-408b-892d-6fdd0a6694e5",
-            "TargetMemberGuid": "World Rotation",
-            "TargetMemberName": "FieldQuaternion"
+            "TargetMemberPortName": "World Rotation",
+            "TargetMemberTypeName": "FieldQuaternion"
         },
         {
             "SourceNodeGuid": "c84f2e69-b0eb-470f-a967-b55a247272dc",
-            "SourceMemberGuid": "Data",
-            "SourceMemberName": "FieldFloat",
+            "SourceMemberPortName": "Data",
+            "SourceMemberTypeName": "FieldFloat",
             "TargetNodeGuid": "54c5b707-a5fa-408b-892d-6fdd0a6694e5",
-            "TargetMemberGuid": "X Channels",
-            "TargetMemberName": "FieldFloat"
+            "TargetMemberPortName": "X Channels",
+            "TargetMemberTypeName": "FieldFloat"
         },
         {
             "SourceNodeGuid": "c84f2e69-b0eb-470f-a967-b55a247272dc",
-            "SourceMemberGuid": "Data",
-            "SourceMemberName": "FieldFloat",
+            "SourceMemberPortName": "Data",
+            "SourceMemberTypeName": "FieldFloat",
             "TargetNodeGuid": "54c5b707-a5fa-408b-892d-6fdd0a6694e5",
-            "TargetMemberGuid": "Y Channels",
-            "TargetMemberName": "FieldFloat"
+            "TargetMemberPortName": "Y Channels",
+            "TargetMemberTypeName": "FieldFloat"
         },
         {
             "SourceNodeGuid": "c84f2e69-b0eb-470f-a967-b55a247272dc",
-            "SourceMemberGuid": "Data",
-            "SourceMemberName": "FieldFloat",
+            "SourceMemberPortName": "Data",
+            "SourceMemberTypeName": "FieldFloat",
             "TargetNodeGuid": "54c5b707-a5fa-408b-892d-6fdd0a6694e5",
-            "TargetMemberGuid": "Rate",
-            "TargetMemberName": "FieldFloat"
+            "TargetMemberPortName": "Rate",
+            "TargetMemberTypeName": "FieldFloat"
         }
     ]
 }

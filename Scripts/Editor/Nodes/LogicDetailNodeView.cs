@@ -5,7 +5,7 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
 using UnityEngine.EventSystems;
 
-namespace GeoTetra.GTLogicGraph
+namespace SensorFoundation.SensorGraph
 {
     /// <summary>
     /// Actual visual nodes which gets added to the graph UI.

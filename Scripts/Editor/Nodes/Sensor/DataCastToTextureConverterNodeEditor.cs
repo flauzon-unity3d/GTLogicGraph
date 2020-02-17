@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace GeoTetra.GTLogicGraph
+namespace SensorFoundation.SensorGraph
 {
     [Title("Data", "Data Cast To Texture")]
     public class DataCastToTextureNodeEditor : NodeEditor

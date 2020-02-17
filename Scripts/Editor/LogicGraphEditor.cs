@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace GeoTetra.GTLogicGraph
+namespace SensorFoundation.SensorGraph
 {
 	[CustomEditor(typeof(LogicGraphData))]
 	public class LogicGraphEditor : Editor

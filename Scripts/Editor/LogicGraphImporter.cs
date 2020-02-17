@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.IO;
 using System.Text;
-using GeoTetra.GTLogicGraph;
+using SensorFoundation.SensorGraph;
 using UnityEditor;
 using UnityEditor.Experimental.AssetImporters;
 using UnityEditor.Graphs;

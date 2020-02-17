@@ -1,5 +1,4 @@
 
-
 .port {
 	position: relative;
 	min-height: 24px;
@@ -16,6 +15,7 @@
     --port-color: rgb(200, 200, 200);
     --disabled-port-color: rgb(70, 70, 70);	
 }
+
 
 .port.input {
     flex-direction: row;
@@ -87,117 +87,31 @@
 }
 
 
-/*******************************/
-/* Ports colors by types */
-/*******************************/
+/********************************/
+/* Ports colors by types 		*/
+/********************************/
 
-.port.typeTexture {
-    --port-color:#FF8B8B;
+.FieldBool {
+    --port-color: rgb(100, 0, 0);
 }
 
-.port.typeTexture2D {
-    /* Same as typeTexture */
-    --port-color:#FF8B8B;
+.FieldFloat {
+    --port-color: rgb(100, 100, 200);
 }
 
-.port.typeGraphScript {
-    /* Todo: there is no such type in Unity atm */
-    --port-color:#E681BA;
+.FieldQuaternion {
+    --port-color: rgb(100, 0, 200);
 }
 
-.port.typeFloat4 {
-    --port-color:#FBCBF4;
+.FieldVector2 {
+    --port-color: rgb(100, 0, 200);
 }
 
-.port.typeVector4 {
-    /* Same as typeFloat4 */
-    --port-color:#FBCBF4;
+.FieldVector3 {
+    --port-color: rgb(100, 0, 200);
 }
 
-.port.typeQuaternion {
-    /* Same as typeFloat4 */
-    --port-color:#FBCBF4;
+.FieldVector4 {
+    --port-color: rgb(100, 0, 200);
 }
 
-.port.typeColor {
-    /* Same as typeFloat4 */
-    --port-color:#FBCBF4;
-}
-
-.port.typeInt {
-    --port-color:#9481E6;
-}
-
-.port.typeInt32 {
-    /* Same as typeInt */
-    --port-color:#9481E6;
-}
-
-.port.typeInt64 {
-    /* Same as typeInt */
-    /* todo we might want to differentiate that from int32 */
-    --port-color:#9481E6;
-}
-
-.port.typeBool {
-    --port-color:#9481E6;
-}
-
-.port.typeMatrix {
-    --port-color:#8FC1DF;
-}
-
-.port.typeMatrix4x4 {
-    /* Same as typeMatrix */
-    --port-color:#8FC1DF;
-}
-
-.port.typeGameObject {
-    --port-color:#8FC1DF;
-}
-
-.port.fieldFloat {
-    --port-color:#84E4E7;
-}
-
-.port.typeFloat1 {
-    /* Same as typeFloat */
-    --port-color:#84E4E7;
-}
-
-.port.typeSingle {
-    /* Same as typeFloat */
-    --port-color:#84E4E7;
-}
-
-.port.typeDouble {
-    /* Same as typeFloat */
-    /* todo we might want to differentiate that from float */
-    --port-color:#84E4E7;
-}
-
-.port.typeFloat2 {
-    --port-color:#9AEF92;
-}
-
-.port.typeVector2 {
-    /* Same as typeFloat2 */
-    --port-color:#9AEF92;
-}
-
-.port.typeComponent {
-    --port-color:#C9F774;
-}
-
-.port.typeFloat3 {
-    --port-color:#F6FF9A;
-}
-
-.port.typeVector3 {
-    /* Same as typeFloat3 */
-    --port-color:#F6FF9A;
-}
-
-.port.typeString {
-    --port-color:#FCD76E;
-}
