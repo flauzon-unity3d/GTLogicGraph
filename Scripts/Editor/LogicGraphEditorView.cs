@@ -213,7 +213,7 @@ namespace SensorFoundation.SensorGraph
                     viewDataKey = "LogicGraphView"
                 };
                 
-                _graphView.SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
+                _graphView.SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale * 2.0f, ContentZoomer.DefaultScaleStep * 0.5f, ContentZoomer.DefaultReferenceScale);
                 _graphView.AddManipulator(new ContentDragger());
                 _graphView.AddManipulator(new SelectionDragger());
                 _graphView.AddManipulator(new RectangleSelector());

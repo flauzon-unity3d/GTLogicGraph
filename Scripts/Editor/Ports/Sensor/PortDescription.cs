@@ -413,6 +413,7 @@ namespace SensorFoundation.SensorGraph
                     Label l = new Label();
                     l.text = kName[a];
                     l.style.alignSelf = Align.Center;
+                    l.style.minWidth = 20;
                     container.Add(l);
 
                     fields[a] = new TextField();
@@ -491,6 +492,7 @@ namespace SensorFoundation.SensorGraph
                     Label l = new Label();
                     l.text = kName[a];
                     l.style.alignSelf = Align.Center;
+                    l.style.minWidth = 20;
                     container.Add(l);
 
                     fields[a] = new TextField();
@@ -571,6 +573,7 @@ namespace SensorFoundation.SensorGraph
                     Label l = new Label();
                     l.text = kName[a];
                     l.style.alignSelf = Align.Center;
+                    l.style.minWidth = 20;
                     container.Add(l);
 
                     fields[a] = new TextField();
@@ -651,6 +654,7 @@ namespace SensorFoundation.SensorGraph
                     Label l = new Label();
                     l.text = kName[a];
                     l.style.alignSelf = Align.Center;
+                    l.style.minWidth = 20;
                     container.Add(l);
 
                     fields[a] = new TextField();
